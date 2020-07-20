@@ -25,7 +25,7 @@
    MiddlePoint():
 	   return minarg_p(Cost(p))
    Cost():
-	   return Cost(MiddlePoint())                   */
+	   return Cost(MiddlePoint())*/
 class Cluster {
 public:
 	Cluster();/*default constructor for class Cluster*/
