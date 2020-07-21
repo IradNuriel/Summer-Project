@@ -1,5 +1,6 @@
 #include "Cluster.h"
 #include "Line.h"
+
 Cluster::Cluster() : count(0),
 directionVectorRejectionSum(Matx33f::zeros()),
 originProjectionSum({ 0, 0, 0 }),

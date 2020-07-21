@@ -1,7 +1,11 @@
 #include <iostream>
+#include "LineBuilder.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	LineBuilder lb = LineBuilder();
+	Line l = lb.get_line();
+
+	std::cout << "Hello World!\n";
 }
 

@@ -24,7 +24,7 @@ public:
 	void setP(Vec3d p);/*function setP, get a 3D point as an input, represented by a vecter, 
 					   and change the origin of th eline to its projection on the line.*/
 	Vec3d projectionOf(Vec3d x) const;/*function projectionOf,
-									  get a 3D point as an input represented by a vecter,
+									  get a 3D point as an input represented by a vector,
 									  and return its projection on the line.*/
 protected:
 	Vec3d originProjection; //Projection of the origin on the line
