@@ -10,9 +10,9 @@ LineBuilder::LineBuilder(std::valarray<int> res, std::valarray<double> a) {
 Line LineBuilder::getLine(Vec3d pos, std::valarray<int> pixel) const {
 	// casting int arrays into double arrays (to be used later)
 	std::valarray<double> pixeld = std::valarray<double>(2);
-	copy(begin(pixel), end(pixel), begin(pixeld));
+	std::copy(std::begin(pixel), std::end(pixel), std::begin(pixeld));
 	std::valarray<double> resd = std::valarray<double>(2);
-	copy(begin(resolution), end(resolution), begin(resd));
+	std::copy(std::begin(resolution), std::end(resolution), std::begin(resd));
 
 	// IDK what this does (ask Licht)
 	pixeld = pixeld / (resd / 2.0);

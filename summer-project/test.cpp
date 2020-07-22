@@ -1,8 +1,7 @@
 #include <iostream>
 #include "LineBuilder.h"
 
-int main()
-{
+int main() {
 	LineBuilder lb = LineBuilder();
 	Line l = lb.getLine();
 

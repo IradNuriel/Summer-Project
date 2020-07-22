@@ -11,8 +11,7 @@
 #include <valarray>
 
 // this entire class was translated from python, orig. code by Licht
-class LineBuilder
-{
+class LineBuilder {
 public:
 	LineBuilder(std::valarray<int> res = { 6000, 4000 }, std::valarray<double> a = { 66.276, 46.861 }); // c'tor
 	Line getLine(Vec3d pos = Vec3d(), std::valarray<int> pixel = {0,0} ) const;

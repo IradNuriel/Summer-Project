@@ -6,13 +6,12 @@
 #include <vector>
 #include <limits>
 
-using namespace std;
+
 using namespace cv;
 	
 /* Line is represented by a point p which is the projection
    of the origin on the line and a unit direction vector v */
-class Line
-{
+class Line {
 public:
 	Line();//default c'tor of class Line
 	Line(const Line& l);//copy c'tor
