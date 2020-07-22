@@ -4,7 +4,7 @@
 int main()
 {
 	LineBuilder lb = LineBuilder();
-	Line l = lb.get_line();
+	Line l = lb.getLine();
 
 	std::cout << "Hello World!\n";
 }

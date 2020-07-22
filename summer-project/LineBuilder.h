@@ -9,17 +9,16 @@
 
 // use value arrays
 #include <valarray>
-using namespace std;
 
 // this entire class was translated from python, orig. code by Licht
 class LineBuilder
 {
 public:
-	LineBuilder(valarray<int> res = { 6000, 4000 }, valarray<double> a = { 66.276, 46.861 }); // c'tor
-	Line get_line(Vec3d pos = Vec3d(), valarray<int> pixel = {0,0} ) const;
+	LineBuilder(std::valarray<int> res = { 6000, 4000 }, std::valarray<double> a = { 66.276, 46.861 }); // c'tor
+	Line getLine(Vec3d pos = Vec3d(), std::valarray<int> pixel = {0,0} ) const;
 protected:
-	valarray<int> resolution; // the camera's resolution (horizontal, vertical)
-	valarray<double> angle; // the camera's angle of view (horisontal, vertical)
+	std::valarray<int> resolution; // the camera's resolution (horizontal, vertical)
+	std::valarray<double> angle; // the camera's angle of view (horisontal, vertical)
 };
 
 #endif
