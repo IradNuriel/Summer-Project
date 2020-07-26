@@ -17,5 +17,5 @@ Line LineBuilder::getLine(Vec3d pos, std::valarray<int> pixel) const {
 	pixeld[1] = -pixeld[1]; // coordinates (>x, ^y, .z)
 	std::valarray<double> temp = (pixeld * tan(angle / 2.0)) / (resolution / 2.0); // calculating x,y length relative to z (=1)
 	Vec3d v = { temp[0], temp[1], 1 }; //declaring the 3d line vector based on the calculation above
-	return Line(v, pos);
+	return Line(pos, v);
 }
