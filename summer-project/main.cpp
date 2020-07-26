@@ -11,7 +11,9 @@ Cluster getCluster(LineBuilder& lb, std::vector<std::valarray<int>>& pixel, int 
 	}
 	return clus;
 }
-
+void print(Cluster& clus) {
+	std::cout << "POINT: "<< clus.getMiddlePoint() << ", COST: "<< clus.cost() / clus.size() <<std::endl;
+}
 
 int main() {
 	LineBuilder lb = LineBuilder();
@@ -23,7 +25,8 @@ int main() {
 	std::vector<std::valarray<int>> window = { {5784,2626},{5133,2635},{4473,2637},{4091,2667} };
 	std::vector<Line> lines;
 	Cluster clus = getCluster(lb, topcircle);
-	auto point = clus.getMiddlePoint();
-	std::cout << point << std::endl;
+	print(clus);
+	clus = getCluster(lb, power);
+	print(clus);
 }
 
