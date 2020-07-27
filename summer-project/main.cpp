@@ -22,7 +22,7 @@ int main() {
 	std::vector<std::valarray<int>> power = { {4335, 2434}, { 3783,2428 }, { 3529,2437 }, { 3067,2446 }, { 2574,2448 }, { 2393,2454 }};
 	std::vector<std::valarray<int>> desk = { {2269,2973},{1540,2977},{1123,2964},{511,2980} };
 	std::vector<std::valarray<int>> remoteControl = { {3838,3781},{3093,3782},{2608,3789},{1941,3796},{1258,3803},{911,3767} };
-	std::vector<std::valarray<int>> window = { {5784,2626},{5133,2635},{4473,2637},{4091,2667} };
+	std::vector<std::valarray<int>> window = { {5784,2626},{5133,2635},{4473,2637},{4091,2667} }; //offset=0
 	std::vector<Line> lines;
 	Cluster clus = getCluster(lb, topcircle);
 	print(clus);
