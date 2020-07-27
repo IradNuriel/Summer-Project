@@ -71,3 +71,9 @@ Line Cluster::toLine() const {
 size_t Cluster::size() const {
 	return this->count;
 }
+
+std::ostream& operator<<(std::ostream& out, const Cluster cluster) {
+	out << "POINT: " << cluster.getMiddlePoint() << ", COST: " << cluster.cost() / cluster.size()<<"";
+	return out;
+}
+

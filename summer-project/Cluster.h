@@ -1,6 +1,7 @@
 #ifndef _CLUSTER_H_
 #define _CLUSTER_H_
 #include "Line.h"
+#include <ostream>
 /* Cluster is a data-structure for a set of lines L
    that can answer the following queries in O(1):
 
@@ -53,5 +54,7 @@ protected:
 	Vec3d   originProjectionSum; // Sum of the projections of the origin on the lines.               
 	double  originDistSquredSum; // Sum of the squared distances of the lines from the origin.        
 };
+
+std::ostream& operator<<(std::ostream& out, const Cluster cluster);
 
 #endif
