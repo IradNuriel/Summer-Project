@@ -3,8 +3,6 @@
 #include "Cluster.h"
 #include "ORBDetection.h"
 
-#define _SET1_
-
 Cluster getCluster(LineBuilder& lb, std::vector<std::valarray<int>>& pixel, int offset=2) {
 	Cluster clus = Cluster();
 	int n = pixel.size();
@@ -30,7 +28,7 @@ void checkLinePart() {
 }
 
 void checkORBDetectionPart() {
-	ORBDetection orbDetector;
+	ORBDetector orbDetector;
 #ifdef _SET1_
 	for (int i = -2; i <= 3; i++) {
 		char filename[20];
@@ -46,7 +44,10 @@ void checkORBDetectionPart() {
 		orbDetector.removeImageFromSet(i);
 	}
 #else
-	std::cout << "we need to test on set number 1!"<<std::endl;
+	cv::Mat src = cv::imread(cv::samples::findFile("set1/1.jpg"), IMREAD_ANYCOLOR);
+	orbDetector.addImageToSet(src);
+	orbDetector.showImageWithKeyPoints(0);
+	orbDetector.removeImageFromSet(0);
 #endif
 }
 
