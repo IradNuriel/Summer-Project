@@ -1,4 +1,4 @@
-#include "image.h"
+#include "Image.h"
 
 Image::Image(const cv::Mat & img, const cv::Vec3d & pos, const cv::Ptr<cv::ORB>& detector){
 	this->img = img;

@@ -35,21 +35,12 @@ const ORBDetector& ORBDetector::removeImageFromSet(int i) {//removing image from
 	return *this;
 }
 
-void ORBDetector::showImageWithKeyPoints(int i) {//show the i'th image with its keypoints, also save it to a file
+void ORBDetector::showImageWithKeyPoints(int i) {//show the i'th image with its keypoints.
 	std::vector<cv::KeyPoint> key = this->getFeaturesOfImage(i);
-#ifdef _SET1_
-	char filename[100];
-	sprintf_s(filename, "keypointsinset1/%dkeypoints.jpg", i-2);
-#endif
 	cv::Mat img_keypoints;
 	cv::drawKeypoints(this->imageSet[i], key, img_keypoints,cv::Scalar::all(-1),cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-#ifdef _SET1_
-	cv::imwrite(filename, img_keypoints);
-#endif
 	cv::namedWindow("ORB Keypoints", cv::WINDOW_NORMAL);
 	imshow("ORB Keypoints", img_keypoints);
-#ifndef _SET1_
 	cv::waitKey();
-#endif
 
 }
