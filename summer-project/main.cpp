@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 #include "LineBuilder.h"
 #include "Cluster.h"
 #include "ORBDetector.h"
@@ -53,6 +54,9 @@ void checkORBDetectionPart() {
 }
 
 void checkMatcher() {
+	using namespace std::chrono;
+	std::vector<time_point<steady_clock>> times;
+	times.push_back(high_resolution_clock::now());
 	std::vector<Image> images;
 	for (int i = -2; i <= 3; i++) {
 		char filename[1000];
@@ -64,10 +68,17 @@ void checkMatcher() {
 		}
 		images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
 	}
+	times.push_back(high_resolution_clock::now());
 	Matcher mat;
 	for (Image& img : images) mat.init_img(img);
-	for (int i = 0; i < 4; i++) {
-		mat.match2(images[i], images[i+1], true);
+	times.push_back(high_resolution_clock::now());
+	int jump = 1;
+	for (int i = 0; i + jump < 5; i++) {
+		mat.match2(images[i], images[i+jump], false);
+	}
+	times.push_back(high_resolution_clock::now());
+	for (int i = 0; i + 1 < times.size(); i++) {
+		std::cout << duration_cast<std::chrono::milliseconds>(times[i+1]-times[i]).count() << std::endl;
 	}
 	
 	/*LineBuilder lb({ 1200,800 });
