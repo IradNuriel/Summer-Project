@@ -43,7 +43,7 @@ void Cluster::remove(const Line &l) {
 }
 
 double Cluster::cost(Vec3d x) const {
-	return x.dot(this->directionVectorRejectionSum * x - 2 * this->originProjectionSum) + this->originDistSquredSum;
+	return (x.dot(this->directionVectorRejectionSum * x - 2 * this->originProjectionSum) + this->originDistSquredSum) / this->size();
 }
 
 Vec3d Cluster::getMiddlePoint() const {
@@ -57,7 +57,7 @@ double Cluster::cost() const {
 	if (count <= 1) {
 		return 0;
 	}
-	return this->originDistSquredSum - (this->originProjectionSum).dot(getMiddlePoint());
+	return (this->originDistSquredSum - (this->originProjectionSum).dot(getMiddlePoint())) / this->size();
 }
 
 
@@ -73,7 +73,7 @@ size_t Cluster::size() const {
 }
 
 std::ostream& operator<<(std::ostream& out, const Cluster cluster) {
-	out << "POINT: " << cluster.getMiddlePoint() << ", COST: " << cluster.cost() / cluster.size()<<"";
+	out << "POINT: " << cluster.getMiddlePoint() << ", COST: " << cluster.cost() <<"";
 	return out;
 }
 

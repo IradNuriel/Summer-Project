@@ -14,7 +14,7 @@
 class LineBuilder {
 public:
 	LineBuilder(std::valarray<double> res = { 6000, 4000 }, std::valarray<double> a = { 66.276, 46.861 }); // c'tor
-	Line getLine(Vec3d pos = Vec3d(), std::valarray<int> pixel = {0,0} ) const;
+	Line getLine(Vec3d pos = Vec3d(), std::valarray<double> pixel = {0,0} ) const;
 protected:
 	std::valarray<double> resolution; // the camera's resolution (horizontal, vertical)
 	std::valarray<double> angle; // the camera's angle of view (horisontal, vertical)

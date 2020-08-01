@@ -8,7 +8,7 @@ LineBuilder::LineBuilder(std::valarray<double> res, std::valarray<double> a) {
 	angle = a / 180.0 * M_PI;
 }
 
-Line LineBuilder::getLine(Vec3d pos, std::valarray<int> pixel) const {
+Line LineBuilder::getLine(Vec3d pos, std::valarray<double> pixel) const {
 	// casting int array into double array (to be used later)
 	std::valarray<double> pixeld = std::valarray<double>(2);
 	std::copy(std::begin(pixel), std::end(pixel), std::begin(pixeld));

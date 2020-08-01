@@ -1,5 +1,5 @@
-#ifndef _ORBDETECTION_H_
-#define _ORBDETECTION_H_
+#ifndef _ORBDETECTOR_H_
+#define _ORBDETECTOR_H_
 #include <iostream>
 #include <vector>
 #include "opencv2/core.hpp"
