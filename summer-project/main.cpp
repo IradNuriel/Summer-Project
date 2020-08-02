@@ -5,6 +5,13 @@
 #include "ORBDetector.h"
 #include "Matcher.h"
 
+#define NOAM_COMPUTER 1
+#define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
+
+std::string path(int i) {
+	return FOLDER1 + std::to_string(i) + ".jpg";
+}
+
 Cluster getCluster(LineBuilder& lb, std::vector<std::valarray<double>>& pixel, int offset=2) {
 	Cluster clus = Cluster();
 	int n = pixel.size();
@@ -31,7 +38,7 @@ void checkLinePart() {
 
 void checkORBDetectionPart() {
 	ORBDetector orbDetector;
-	cv::Mat src = cv::imread(cv::samples::findFile("set1/1.jpg"), IMREAD_ANYCOLOR);
+	cv::Mat src = cv::imread(cv::samples::findFile(path(1)), IMREAD_ANYCOLOR);
 	orbDetector.addImageToSet(src);
 	orbDetector.showImageWithKeyPoints(0);
 	orbDetector.removeImageFromSet(0);
@@ -43,13 +50,7 @@ void checkMatcher() {
 	times.push_back(high_resolution_clock::now());
 	std::vector<Image> images;
 	for (int i = -2; i <= 3; i++) {
-		char filename[1000];
-		sprintf_s(filename, "set1/%d.JPG", i); 
-		cv::Mat src = cv::imread(cv::samples::findFile(filename));
-		if (src.empty()) {
-			std::cout << "FUCK! " << i << std::endl;
-			return;
-		}
+		cv::Mat src = cv::imread(cv::samples::findFile(path(i)));
 		images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
 	}
 	times.push_back(high_resolution_clock::now());
@@ -64,21 +65,6 @@ void checkMatcher() {
 	for (int i = 0; i + 1 < times.size(); i++) {
 		std::cout << duration_cast<std::chrono::milliseconds>(times[i+1]-times[i]).count() << std::endl;
 	}
-	
-	/*LineBuilder lb({ 1200,800 });
-	Vec3d pos1 = {-50,118,0}, pos2 = {-25,118,0};
-	std::vector<pKeyPoint> newKvec;
-	for (pKeyPoint& p : Kvec) {
-		cv::Point2d p1 = p.first.pt, p2 = p.second.pt;
-		Line l1 = lb.getLine(pos1, { p1.x,p1.y });
-		Line l2 = lb.getLine(pos2, { p2.x,p2.y });
-		Cluster clus; 
-		clus.add(l1);
-		clus.add(l2);
-		if (clus.cost() > 0.1 ) std::cout << clus << std::endl;
-		else newKvec.push_back(p);
-	}
-	mat.draw(images[0].img, images[1].img, newKvec);*/
 }
 
 int main() {
