@@ -3,7 +3,7 @@
 #include "LineBuilder.h"
 #include "Cluster.h"
 #include "ORBDetector.h"
-#include "matcher.h"
+#include "Matcher.h"
 
 Cluster getCluster(LineBuilder& lb, std::vector<std::valarray<double>>& pixel, int offset=2) {
 	Cluster clus = Cluster();
@@ -31,26 +31,10 @@ void checkLinePart() {
 
 void checkORBDetectionPart() {
 	ORBDetector orbDetector;
-#ifdef _SET1_
-	for (int i = -2; i <= 3; i++) {
-		char filename[20];
-		sprintf_s(filename, "set1/%d.jpg", i);
-		cv::Mat src = cv::imread(cv::samples::findFile(filename), IMREAD_ANYCOLOR);
-		orbDetector.addImageToSet(src);
-	}
-	for (int i = 0; i < 6; i++) {
-		orbDetector.getFeaturesOfImage(i);
-		orbDetector.showImageWithKeyPoints(i);
-	}
-	for (int i = 5; i >= 0; i--) {
-		orbDetector.removeImageFromSet(i);
-	}
-#else
 	cv::Mat src = cv::imread(cv::samples::findFile("set1/1.jpg"), IMREAD_ANYCOLOR);
 	orbDetector.addImageToSet(src);
 	orbDetector.showImageWithKeyPoints(0);
 	orbDetector.removeImageFromSet(0);
-#endif
 }
 
 void checkMatcher() {
@@ -60,7 +44,7 @@ void checkMatcher() {
 	std::vector<Image> images;
 	for (int i = -2; i <= 3; i++) {
 		char filename[1000];
-		sprintf_s(filename, "E:\\פעילות שלנו\\נעם\\אתגר\\מעבדה\\Summer-Project\\Summer-Project\\summer-project\\set1\\%d.JPG", i); //לא הצלחתי עם כתובת יחסית
+		sprintf_s(filename, "set1/%d.JPG", i); 
 		cv::Mat src = cv::imread(cv::samples::findFile(filename));
 		if (src.empty()) {
 			std::cout << "FUCK! " << i << std::endl;
@@ -102,4 +86,3 @@ int main() {
 	//checkORBDetectionPart();
 	checkMatcher();
 }
-

@@ -1,4 +1,4 @@
-#include "matcher.h"
+#include "Matcher.h"
 
 
 Matcher::Matcher(){
@@ -99,6 +99,7 @@ const void Matcher::draw(const cv::Mat& img1, const cv::Mat& img2, const std::ve
 	cv::Mat img_matches;
 	drawMatches(img1, key1, img2, key2, vmtach, img_matches, cv::Scalar::all(-1),
 		cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+	cv::namedWindow("Good Matches", cv::WINDOW_NORMAL);
 	cv::imshow("Good Matches", img_matches);
 	cv::waitKey();
 }
@@ -107,6 +108,7 @@ const void Matcher::draw(const Image & img1, const Image & img2, const std::vect
 	cv::Mat img_matches;
 	drawMatches(img1.img, img1.key, img2.img, img2.key, match, img_matches, cv::Scalar::all(-1),
 		cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+	cv::namedWindow(title, cv::WINDOW_NORMAL);
 	cv::imshow(title, img_matches);
 	cv::waitKey();
 }

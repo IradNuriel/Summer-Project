@@ -7,7 +7,7 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/features2d.hpp"
 #include "Cluster.h"
-#include "image.h"
+#include "Image.h"
 
 
 typedef std::pair<cv::KeyPoint, cv::KeyPoint> pKeyPoint;
