@@ -27,10 +27,8 @@ const std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat&
 	//-- Filter matches using the Lowe's ratio test
 	const float ratio_thresh = 0.75f;
 	std::vector<cv::DMatch> good_matches;
-	for (size_t i = 0; i < knn_matches.size(); i++)
-	{
-		if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance)
-		{
+	for (size_t i = 0; i < knn_matches.size(); i++) {
+		if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
 			good_matches.push_back(knn_matches[i][0]);
 		}
 	}
@@ -42,22 +40,17 @@ const std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat&
 	}
 	if (draw_match) {
 		this->draw(img1, img2, feature);
-		
 	}
 	return feature;
 }
 const void Matcher::match2(Image& img1, Image& img2, bool draw_match) {
-
 	std::vector<std::vector<cv::DMatch>> knn_matches;
 	this->matcher->knnMatch(img1.desc, img2.desc, knn_matches, 2);
-
 	//-- Filter matches using the Lowe's ratio test
 	const float ratio_thresh = 0.7f;
 	std::vector<cv::DMatch> good_matches;
-	for (size_t i = 0; i < knn_matches.size(); i++)
-	{
-		if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance)
-		{
+	for (size_t i = 0; i < knn_matches.size(); i++) {
+		if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
 			good_matches.push_back(knn_matches[i][0]);
 		}
 	}
