@@ -55,7 +55,7 @@ void checkMatcher() {
 	}
 	times.push_back(high_resolution_clock::now());
 	Matcher mat;
-	for (Image& img : images) mat.init_img(img);
+	for (Image& img : images) mat.initImage(img);
 	times.push_back(high_resolution_clock::now());
 	int jump = 1;
 	for (int i = 0; i + jump < 5; i++) {
@@ -69,6 +69,6 @@ void checkMatcher() {
 
 int main() {
 	//checkLinePart();
-	checkORBDetectionPart();
-	//checkMatcher();
+	//checkORBDetectionPart();
+	checkMatcher();
 }
