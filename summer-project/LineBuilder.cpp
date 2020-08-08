@@ -5,7 +5,7 @@
 LineBuilder::LineBuilder(std::valarray<double> res, std::valarray<double> a) {
 	resolution.resize(2);
 	std::copy(std::begin(res), std::end(res), std::begin(resolution));
-	angle = a / 180.0 * M_PI;
+	angle = a / 180.0 * M_PI; // degrees -> radians
 }
 
 Line LineBuilder::getLine(Vec3d pos, std::valarray<double> pixel) const {

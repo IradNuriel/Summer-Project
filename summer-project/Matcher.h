@@ -8,7 +8,7 @@
 #include "opencv2/features2d.hpp"
 #include "Cluster.h"
 #include "Image.h"
-
+#include "Constants.h"
 
 typedef std::pair<cv::KeyPoint, cv::KeyPoint> pKeyPoint;//typedef pKeyPoint, a pair of keypoints.
 
@@ -28,7 +28,7 @@ public:
 	const void draw(const Image& img1, const Image& img2, const std::vector<cv::DMatch>& match, std::string title="Match");/*function draw(const Image&,const Image&,const vector<pKeyPoint>,string="Match"),
 																								  takes two images as an input, and draw the matches between them*/
 private:
-	const int minHessian=1200;//number of keypoints
+	const int minHessian = MIN_HESSIAN;//number of keypoints
 	cv::Ptr<cv::ORB> detector;//pointer to an ORB detector object
 	cv::Ptr<cv::DescriptorMatcher> matcher;
 };
