@@ -67,7 +67,7 @@ const void Matcher::match2(Image& img1, Image& img2, bool drawMatch) {
 		Cluster clus;
 		clus.add(l1);
 		clus.add(l2);
-		if (clus.cost() < 0.1) {
+		if (clus.cost() < 0.1) { //TODO: WHY 0.1? THIS VALUE DEPENDS ON THE LINES.
 			betterMatch.push_back(match);
 			nkey1.push_back(img1.key[match.queryIdx]);
 			nkey2.push_back(img2.key[match.trainIdx]);

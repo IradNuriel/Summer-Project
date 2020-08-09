@@ -59,7 +59,7 @@ void checkMatcher() {
 	times.push_back(high_resolution_clock::now());
 	int jump = 1;
 	for (int i = 0; i + jump < 5; i++) {
-		mat.match2(images[i], images[i+jump], false);
+		mat.match2(images[i], images[i+jump], true);
 	}
 	times.push_back(high_resolution_clock::now());
 	for (int i = 0; i + 1 < times.size(); i++) {
