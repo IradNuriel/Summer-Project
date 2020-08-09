@@ -1,13 +1,13 @@
 #include "ORBDetector.h"
 
 ORBDetector::ORBDetector() {
-	this->minHessian = 1200;
+	this->minHessian = Constants::MIN_HESSIAN;
 	this->detector = cv::ORB::create(minHessian);
 	this->imageSet = std::vector<cv::Mat>();
 }
 
 ORBDetector::ORBDetector(const cv::Mat& img) {
-	this->minHessian = 1200;
+	this->minHessian = Constants::MIN_HESSIAN;
 	this->detector = cv::ORB::create(minHessian);
 	this->imageSet = std::vector<cv::Mat>();
 	this->addImageToSet(img);
