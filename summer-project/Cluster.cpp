@@ -57,7 +57,7 @@ double Cluster::cost() const {
 	if (count <= 1) {
 		return 0;
 	}
-	return (this->originDistSquredSum - (this->originProjectionSum).dot(getMiddlePoint())) / this->size();
+	return this->cost(this->getMiddlePoint());
 }
 
 
@@ -73,7 +73,7 @@ size_t Cluster::size() const {
 }
 
 std::ostream& operator<<(std::ostream& out, const Cluster cluster) {
-	out << "POINT: " << cluster.getMiddlePoint() << ", COST: " << cluster.cost() <<"";
+	out << "#LINES: "<< cluster.size() << " POINT: " << cluster.getMiddlePoint() << ", COST: " << cluster.cost();
 	return out;
 }
 

@@ -13,7 +13,7 @@ typedef std::pair<cv::KeyPoint, cv::KeyPoint> pKeyPoint;
 class KMatcher{
 public:
 	KMatcher();//defult c'tor
-	void match(std::vector<Image> imgs) const;
+	void match(std::vector<Image>& imgs) const;
 protected:
 	Matcher matcher;
 };
