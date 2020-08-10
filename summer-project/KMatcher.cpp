@@ -8,7 +8,7 @@ template<class T, class S>
 bool inMap(map<T, S> m, const T& val) {
 	return m.find(val) != m.end();
 }
-void KMatcher::match(std::vector<Image> imgs) const{
+void KMatcher::match(std::vector<Image>& imgs) const{
 typedef pair<int, int> Node;
 	int n = imgs.size();
 	vector<vector<vector<Node>>> g(n); //graph
@@ -34,7 +34,7 @@ typedef pair<int, int> Node;
 	vector<Vec3d> points;
 	for (int i = 0; i < n; i++) { 
 		for (int j = 0; j < g[i].size(); j++) { //try to find triangle include (i,j)
-			map<Node, int> neighbours;
+			/*map<Node, int> neighbours;
 			bool foundTri = false;
 			vector<Node> clique;
 			for (Node p : g[i][j]) {
@@ -73,12 +73,29 @@ typedef pair<int, int> Node;
 					clus.add(line);
 				}
 				if (clus.cost() <= Constants::GOOD_MATCH_COST) {
+					cout << clus << endl;
 					points.push_back(clus.getMiddlePoint());
 					cliques.push_back(clique);
+				}
+			}*/
+			if (g[i][j].size() > 1) { //dunb solution beacuse clique-based solution (^) works terrible
+				vector<Node> nodes(g[i][j]);
+				nodes.push_back({ i,j });
+				Cluster clus;
+				for (Node node : nodes) {
+					int i = node.first;
+					cv::Point2d pixel = imgs[i].key[node.second].pt;
+					Line line = imgs[i].lb.getLine(imgs[i].pos, { pixel.x,pixel.y });
+					clus.add(line);
+				}
+				if (clus.cost() <= Constants::GOOD_MATCH_COST) {
+					cout << clus << endl;
+					points.push_back(clus.getMiddlePoint());
 				}
 			}
 		}
 	}
+	cout << "#Points: "<< points.size() << endl;
 
 }
 
