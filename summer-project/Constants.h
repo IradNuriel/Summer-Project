@@ -7,8 +7,8 @@ namespace Constants {
 	// For filtering matches using Lowe's ratio test
 	const float RATIO_THRESH = 0.75f;
 
-		// For determining which matches are "good" matches
-	const double GOOD_MATCH_COST = 0.1;
+	// For determining which matches are "good" matches
+	const double GOOD_MATCH_COST = 0.1; //units: cm^2
 
 
 
