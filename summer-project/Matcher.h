@@ -6,9 +6,9 @@
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/features2d.hpp"
+#include "Constants.h"
 #include "Cluster.h"
 #include "Image.h"
-
 
 typedef std::pair<cv::KeyPoint, cv::KeyPoint> pKeyPoint;
 class Matcher {

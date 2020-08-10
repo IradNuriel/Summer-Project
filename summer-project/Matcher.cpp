@@ -65,11 +65,11 @@ std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool draw_matc
 	std::vector<pKeyPoint> feature;
 	std::vector<cv::DMatch> better_match;
 	std::vector<cv::KeyPoint> nkey1, nkey2;
+	Cluster clus;
 	for (const cv::DMatch& match : good_matches) {
 		cv::Point2d p1 = img1.key[match.queryIdx].pt, p2 = img2.key[match.trainIdx].pt;
 		Line l1 = img1.lb.getLine(img1.pos, { p1.x,p1.y });
 		Line l2 = img2.lb.getLine(img2.pos, { p2.x,p2.y });
-		Cluster clus;
 		clus.add(l1);
 		clus.add(l2);
 		if (clus.cost() < 0.1) {
@@ -77,6 +77,8 @@ std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool draw_matc
 			nkey1.push_back(img1.key[match.queryIdx]);
 			nkey2.push_back(img2.key[match.trainIdx]);
 		}
+		clus.remove(l1);
+		clus.remove(l2);
 	}
 	if (draw_match) {
 		this->draw(img1, img2, good_matches);
