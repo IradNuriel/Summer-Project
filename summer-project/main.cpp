@@ -6,7 +6,7 @@
 #include "Matcher.h"
 #include "KMatcher.h"
 
-#define NOAM_COMPUTER 1
+#define NOAM_COMPUTER 0
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
 
 std::string path(int i) {
@@ -82,5 +82,5 @@ void checkKMatcher() {
 int main() {
 	checkLinePart();
 	//checkORBDetectionPart();
-	checkMatcher();
+	checkKMatcher();
 }
