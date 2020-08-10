@@ -68,7 +68,7 @@ void checkMatcher() {
 }
 
 int main() {
-	//checkLinePart();
+	checkLinePart();
 	//checkORBDetectionPart();
-	checkMatcher();
+	//checkMatcher();
 }
