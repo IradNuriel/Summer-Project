@@ -4,8 +4,9 @@
 #include "Cluster.h"
 #include "ORBDetector.h"
 #include "Matcher.h"
+#include "KMatcher.h"
 
-#define NOAM_COMPUTER 0
+#define NOAM_COMPUTER 1
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
 
 std::string path(int i) {
@@ -55,11 +56,11 @@ void checkMatcher() {
 	}
 	times.push_back(high_resolution_clock::now());
 	Matcher mat;
-	for (Image& img : images) mat.initImage(img);
+	for (Image& img : images) mat.init_img(img);
 	times.push_back(high_resolution_clock::now());
 	int jump = 1;
 	for (int i = 0; i + jump < 5; i++) {
-		mat.match2(images[i], images[i+jump], true);
+		mat.match2(images[i], images[i+jump]);
 	}
 	times.push_back(high_resolution_clock::now());
 	for (int i = 0; i + 1 < times.size(); i++) {
@@ -67,8 +68,19 @@ void checkMatcher() {
 	}
 }
 
+void checkKMatcher() {
+	std::vector<Image> images;
+	for (int i = -2; i <= 3; i++) {
+		cv::Mat src = cv::imread(cv::samples::findFile(path(i)));
+		images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
+	}
+	KMatcher matcher;
+	matcher.match(images);
+}
+
+
 int main() {
 	checkLinePart();
 	//checkORBDetectionPart();
-	//checkMatcher();
+	checkMatcher();
 }
