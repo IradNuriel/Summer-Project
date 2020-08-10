@@ -11,11 +11,11 @@ Matcher::Matcher(const Matcher & other){
 	this->matcher = cv::Ptr<cv::DescriptorMatcher>(other.matcher);
 }
 
-const void Matcher::init_img(Image & img){
+void Matcher::init_img(Image & img) const{
 	img.init(this->detector);
 }
 
-const std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat& img2, bool draw_match) {
+std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat& img2, bool draw_match) const {
 	std::vector<cv::KeyPoint> keypoints1, keypoints2;
 	cv::Mat descriptors1, descriptors2;
 	this->detector->detectAndCompute(img1, cv::noArray(), keypoints1, descriptors1);
@@ -46,7 +46,7 @@ const std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat&
 	}
 	return feature;
 }
-const void Matcher::match2(Image& img1, Image& img2, bool draw_match) {
+std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool draw_match) const {
 
 	std::vector<std::vector<cv::DMatch>> knn_matches;
 	this->matcher->knnMatch(img1.desc, img2.desc, knn_matches, 2);
@@ -82,12 +82,11 @@ const void Matcher::match2(Image& img1, Image& img2, bool draw_match) {
 		this->draw(img1, img2, good_matches);
 		this->draw(img1, img2, better_match);
 	}
-	/*img1.key = nkey1;
-	img2.key = nkey2;*/
+	return better_match;
 }
 
 
-const void Matcher::draw(const cv::Mat& img1, const cv::Mat& img2, const std::vector<pKeyPoint>& kvec){
+void Matcher::draw(const cv::Mat& img1, const cv::Mat& img2, const std::vector<pKeyPoint>& kvec) const{
 	//-- Draw matches
 	std::vector<cv::KeyPoint> key1, key2;
 	std::vector<cv::DMatch> vmtach;
@@ -104,7 +103,7 @@ const void Matcher::draw(const cv::Mat& img1, const cv::Mat& img2, const std::ve
 	cv::waitKey();
 }
 
-const void Matcher::draw(const Image & img1, const Image & img2, const std::vector<cv::DMatch>& match, std::string title){
+void Matcher::draw(const Image & img1, const Image & img2, const std::vector<cv::DMatch>& match, std::string title) const{
 	cv::Mat img_matches;
 	drawMatches(img1.img, img1.key, img2.img, img2.key, match, img_matches, cv::Scalar::all(-1),
 		cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
