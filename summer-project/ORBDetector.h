@@ -6,6 +6,7 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/features2d.hpp"
 
+#include "Constants.h"
 
 class ORBDetector{
 public:

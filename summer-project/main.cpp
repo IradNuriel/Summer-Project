@@ -5,7 +5,7 @@
 #include "ORBDetector.h"
 #include "Matcher.h"
 
-#define NOAM_COMPUTER 1
+#define NOAM_COMPUTER 0
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
 
 std::string path(int i) {
@@ -55,11 +55,11 @@ void checkMatcher() {
 	}
 	times.push_back(high_resolution_clock::now());
 	Matcher mat;
-	for (Image& img : images) mat.init_img(img);
+	for (Image& img : images) mat.initImage(img);
 	times.push_back(high_resolution_clock::now());
 	int jump = 1;
 	for (int i = 0; i + jump < 5; i++) {
-		mat.match2(images[i], images[i+jump], false);
+		mat.match2(images[i], images[i+jump], true);
 	}
 	times.push_back(high_resolution_clock::now());
 	for (int i = 0; i + 1 < times.size(); i++) {

@@ -2,10 +2,8 @@
 #define _LINE_BUILDER_H_
 
 #include "Line.h"
-
+#include "Constants.h"
 // use PI
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 // use value arrays
 #include <valarray>

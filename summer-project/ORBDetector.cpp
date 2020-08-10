@@ -1,13 +1,13 @@
 #include "ORBDetector.h"
 
 ORBDetector::ORBDetector() {
-	this->minHessian = 1200;
+	this->minHessian = Constants::MIN_HESSIAN;
 	this->detector = cv::ORB::create(minHessian);
 	this->imageSet = std::vector<cv::Mat>();
 }
 
 ORBDetector::ORBDetector(const cv::Mat& img) {
-	this->minHessian = 1200;
+	this->minHessian = Constants::MIN_HESSIAN;
 	this->detector = cv::ORB::create(minHessian);
 	this->imageSet = std::vector<cv::Mat>();
 	this->addImageToSet(img);
@@ -38,7 +38,7 @@ const ORBDetector& ORBDetector::removeImageFromSet(int i) {//removing image from
 void ORBDetector::showImageWithKeyPoints(int i) {//show the i'th image with its keypoints.
 	std::vector<cv::KeyPoint> key = this->getFeaturesOfImage(i);
 	cv::Mat img_keypoints;
-	cv::drawKeypoints(this->imageSet[i], key, img_keypoints,cv::Scalar::all(-1),cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	cv::drawKeypoints(this->imageSet[i], key, img_keypoints,cv::Scalar::all(-1),cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
 	cv::namedWindow("ORB Keypoints", cv::WINDOW_NORMAL);
 	imshow("ORB Keypoints", img_keypoints);
 	cv::waitKey();
