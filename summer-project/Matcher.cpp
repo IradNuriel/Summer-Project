@@ -46,7 +46,7 @@ const std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat&
 const void Matcher::match2(Image& img1, Image& img2, bool drawMatch) {
 	//k nearest neighbor matching
 	std::vector<std::vector<cv::DMatch>> knnMatches;
-	this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, Constants::N_KEYPOINTS );
+	this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, 2 );
 	//-- Filter matches using the Lowe's ratio test
 	std::vector<cv::DMatch> goodMatches;
 	for (size_t i = 0; i < knnMatches.size(); i++) {

@@ -1,5 +1,8 @@
 #ifndef _CONSTANTS_H_
 #define _CONSTANTS_H_
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 namespace Constants {
 	// For filtering matches using Lowe's ratio test
 	const float RATIO_THRESH = 0.75f;
@@ -8,10 +11,11 @@ namespace Constants {
 	const double GOOD_MATCH_COST = 0.1;
 
 
-// temporary, while we're only using two cameras (this will not be a constant later on)
-	const int N_KEYPOINTS = 2;
+
 
 // Number of keypoints
 	const int MIN_HESSIAN = 1200;
+//ratio of degrees->radians
+	const double DEGREE_TO_RADIANS_RATIO = M_PI/180.0;
 }
 #endif
