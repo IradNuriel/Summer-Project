@@ -72,7 +72,8 @@ std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool draw_matc
 		Line l2 = img2.lb.getLine(img2.pos, { p2.x,p2.y });
 		clus.add(l1);
 		clus.add(l2);
-		if (clus.cost() < 0.1) {
+		if (clus.cost() < Constants::GOOD_MATCH_COST) {
+			if (clus.cost() < -Constants::GOOD_MATCH_COST) std::cout << "FUCK! "<< clus << std::endl;
 			better_match.push_back(match);
 			nkey1.push_back(img1.key[match.queryIdx]);
 			nkey2.push_back(img2.key[match.trainIdx]);

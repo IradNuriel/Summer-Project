@@ -32,8 +32,8 @@ typedef pair<int, int> Node;
 	}
 	vector<vector<Node>> cliques;
 	vector<Vec3d> points;
-	for (int i = 0; i < n; i++) { //try to find triangle start in i (and not using [0,i-1])
-		for (int j = 0; j < g[i].size(); j++) {
+	for (int i = 0; i < n; i++) { 
+		for (int j = 0; j < g[i].size(); j++) { //try to find triangle include (i,j)
 			map<Node, int> neighbours;
 			bool foundTri = false;
 			vector<Node> clique;
