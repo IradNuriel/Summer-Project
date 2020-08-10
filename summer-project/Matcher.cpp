@@ -18,11 +18,12 @@ void Matcher::init_img(Image & img) const{
 std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat& img2, bool draw_match) const {
 	std::vector<cv::KeyPoint> keypoints1, keypoints2;
 	cv::Mat descriptors1, descriptors2;
+	//detect keypoints in input images.
 	this->detector->detectAndCompute(img1, cv::noArray(), keypoints1, descriptors1);
 	this->detector->detectAndCompute(img2, cv::noArray(), keypoints2, descriptors2);
-	
-	std::vector<std::vector<cv::DMatch>> knn_matches;
-	this->matcher->knnMatch(descriptors1, descriptors2, knn_matches, 2);
+	//k nearest neighbor matching.
+	std::vector<std::vector<cv::DMatch>> knnMatches;
+	this->matcher->knnMatch(descriptors1, descriptors2, knnMatches, 2);
 	
 	//-- Filter matches using the Lowe's ratio test
 	const float ratio_thresh = 0.75f;
@@ -47,10 +48,9 @@ std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat& img2,
 	return feature;
 }
 std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool draw_match) const {
-
-	std::vector<std::vector<cv::DMatch>> knn_matches;
-	this->matcher->knnMatch(img1.desc, img2.desc, knn_matches, 2);
-
+	//k nearest neighbor matching
+	std::vector<std::vector<cv::DMatch>> knnMatches;
+	this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, 2 );
 	//-- Filter matches using the Lowe's ratio test
 	const float ratio_thresh = 0.7f;
 	std::vector<cv::DMatch> good_matches;
@@ -104,6 +104,7 @@ void Matcher::draw(const cv::Mat& img1, const cv::Mat& img2, const std::vector<p
 }
 
 void Matcher::draw(const Image & img1, const Image & img2, const std::vector<cv::DMatch>& match, std::string title) const{
+	//-- Draw matches
 	cv::Mat img_matches;
 	drawMatches(img1.img, img1.key, img2.img, img2.key, match, img_matches, cv::Scalar::all(-1),
 		cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
