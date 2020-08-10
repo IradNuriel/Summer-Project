@@ -28,11 +28,11 @@ std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat& img2,
 	//-- Filter matches using the Lowe's ratio test
 	const float ratio_thresh = 0.75f;
 	std::vector<cv::DMatch> good_matches;
-	for (size_t i = 0; i < knn_matches.size(); i++)
+	for (size_t i = 0; i < knnMatches.size(); i++)
 	{
-		if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance)
+		if (knnMatches[i][0].distance < ratio_thresh * knnMatches[i][1].distance)
 		{
-			good_matches.push_back(knn_matches[i][0]);
+			good_matches.push_back(knnMatches[i][0]);
 		}
 	}
 	// discarding
@@ -54,11 +54,11 @@ std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool draw_matc
 	//-- Filter matches using the Lowe's ratio test
 	const float ratio_thresh = 0.7f;
 	std::vector<cv::DMatch> good_matches;
-	for (size_t i = 0; i < knn_matches.size(); i++)
+	for (size_t i = 0; i < knnMatches.size(); i++)
 	{
-		if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance)
+		if (knnMatches[i][0].distance < ratio_thresh * knnMatches[i][1].distance)
 		{
-			good_matches.push_back(knn_matches[i][0]);
+			good_matches.push_back(knnMatches[i][0]);
 		}
 	}
 	// discarding
