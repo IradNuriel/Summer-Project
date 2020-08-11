@@ -11,7 +11,7 @@ Matcher::Matcher(const Matcher & other){
 	this->matcher = cv::Ptr<cv::DescriptorMatcher>(other.matcher);
 }
 
-void Matcher::init_img(Image & img) const{
+void Matcher::initImg(Image & img) const{
 	img.init(this->detector);
 }
 
@@ -68,15 +68,16 @@ std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool drawMatch
 		clus.add(l1);
 		clus.add(l2);
 		if (clus.cost() < Constants::GOOD_MATCH_COST) {
-			if (clus.cost() < 0) {
+			if (clus.cost() < -Constants::GOOD_MATCH_COST) {
 				std::cout << "FUCK! " << clus << std::endl;
 			}
 			else {
 				std::cout << "GOOD! " << clus << std::endl;
+				betterMatch.push_back(match);
+				nkey1.push_back(img1.key[match.queryIdx]);
+				nkey2.push_back(img2.key[match.trainIdx]);
 			}
-			betterMatch.push_back(match);
-			nkey1.push_back(img1.key[match.queryIdx]);
-			nkey2.push_back(img2.key[match.trainIdx]);
+			
 		}
 		clus.remove(l1);
 		clus.remove(l2);

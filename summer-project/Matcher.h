@@ -15,7 +15,7 @@ class Matcher {
 public:
 	Matcher();//defult c'tor
 	Matcher(const Matcher& other);//copy c'tor
-	void init_img(Image& img) const; //function initImage, take an image object and initialize it with this->detector.
+	void initImg(Image& img) const; //function initImage, take an image object and initialize it with this->detector.
 	std::vector<pKeyPoint> match2(const cv::Mat& img1, const cv::Mat& img2, bool drawMatch=false) const; /*function match2(const Mat&,const Mat&,bool), takes two image matrices as an input,
 														and return matching features that has been filtered by the Lowe's ratio test.*/
 	std::vector<cv::DMatch> match2(Image& img1, Image& img2, bool drawMatch=false) const; /*function match2(Image&,Image&,bool),

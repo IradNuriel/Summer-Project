@@ -10,11 +10,9 @@
 
 
 typedef std::pair<cv::KeyPoint, cv::KeyPoint> pKeyPoint;
-class KMatcher{
+class KMatcher : public Matcher{
 public:
 	KMatcher();//defult c'tor
 	void match(std::vector<Image>& imgs) const;
-protected:
-	Matcher matcher;
 };
 #endif

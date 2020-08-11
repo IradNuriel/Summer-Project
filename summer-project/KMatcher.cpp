@@ -14,14 +14,14 @@ typedef pair<int, int> Node;
 	vector<vector<vector<Node>>> g(n); //graph
 	//init photos and graph
 	for (int i = 0; i < n; i++) { 
-		this->matcher.init_img(imgs[i]);
+		this->initImg(imgs[i]);
 		g[i].resize(imgs[i].key.size());
 	}
 	// build graph
 	map<pair<Node, Node>, bool> edges;
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; i < n; i++) {
-			auto ijMtach = this->matcher.match2(imgs[i], imgs[j]);
+			auto ijMtach = this->match2(imgs[i], imgs[j]);
 			for (auto p : ijMtach) {
 				Node a = {i, p.queryIdx}, b = {j, p.trainIdx};
 				g[a.first][a.second].push_back(b);

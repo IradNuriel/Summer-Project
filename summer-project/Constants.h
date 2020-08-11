@@ -8,7 +8,7 @@ namespace Constants {
 	const float RATIO_THRESH = 0.75f;
 
 	// For determining which matches are "good" matches
-	const double GOOD_MATCH_COST = 5.0; //units: cm^2
+	const double GOOD_MATCH_COST = 1; //units: cm^2
 
 
 
@@ -17,5 +17,6 @@ namespace Constants {
 	const int MIN_HESSIAN = 1200;
 //ratio of degrees->radians
 	const double DEGREE_TO_RADIANS_RATIO = M_PI/180.0;
+
 }
 #endif
