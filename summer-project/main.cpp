@@ -83,7 +83,7 @@ void checkKMatcher() {
 }
 
 void checkCalibration() {
-
+	caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
 }
 
 
@@ -92,4 +92,5 @@ int main() {
 	//checkORBDetectionPart();
 	//checkMatcher();
 	//checkKMatcher();
+	checkCalibration();
 }
