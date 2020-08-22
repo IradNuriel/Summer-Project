@@ -5,7 +5,7 @@
 #include "ORBDetector.h"
 #include "Matcher.h"
 #include "KMatcher.h"
-#include "Calibration.h"
+#include "Camera.h"
 
 
 #define NOAM_COMPUTER 0
@@ -83,7 +83,9 @@ void checkKMatcher() {
 }
 
 void checkCalibration() {
-	caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
+	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
+	Camera riesPhoneCamera(30, "chessboardcalibration/", 7, 4);
+	std::cout << riesPhoneCamera;
 }
 
 

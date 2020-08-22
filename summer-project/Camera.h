@@ -1,0 +1,59 @@
+#ifndef _CALIBRATION_H_
+#define _CALIBRATION_H_
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include "opencv2/core.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/features2d.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/calib3d.hpp"
+#include "Constants.h"
+#include <time.h>
+#include <ostream>
+
+class Camera {
+public:
+	Camera();
+	Camera(const Camera& other);
+	Camera(int numOfImages,std::string directoryPath,int chessBoardRows=7,int chessBoardCols=4);
+	friend std::ostream& operator<<(std::ostream& out, const Camera& camera);
+	//input: references to a cv::Mat_<double>, and two std::vector<cv::Mat> references, the return value will be in the parameters you've pass in 
+	void getCalibrationParameters(cv::Mat_<double>& cameraMatrixOut, std::vector<cv::Mat>& rvecsOut, std::vector<cv::Mat>& tvecsOut);
+	//input: std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
+	void getCameraGlobalPoseTransformation(std::vector<cv::Mat_<float>>& transformationOut);
+	//std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
+	void getCameraRelativePoseTransformation(std::vector<cv::Mat_<float>>& transformationOut);
+	//cv::Mat_<float> reference, the return value will be in the parameters you've pass in
+	void getCameraMeanRelativePoseTransformation(cv::Mat_<float>& transformationOut);
+
+private:
+	void calcAllCameraParameters();
+	//initialization functions
+	void calcMeanRelativeCameraPoseTransformation();
+	void calcRelativeCameraPoseTransformation();
+	void calcGlobalCameraPoseTransformation();
+	void calcCameraIntrinsicParameters();
+	std::vector<cv::Point3f> dynamicallyCreateObjp();
+	//size of chessboard that the calibration performed on.
+	int chessBoardRows;
+	int chessBoardCols;
+	//num of images of the chessboard
+	int numOfImages;
+	//path to the images of the chessboard
+	std::string directoryPath;
+	//camera intrinsic parameters
+	cv::Mat_<double> cameraMatrix;//camera matrix
+	std::vector<cv::Mat> rvecs;//camera rotation
+	std::vector<cv::Mat> tvecs;//camera translation
+	//global camera pose parameters
+	std::vector<cv::Mat_<float>> globalCameraTransformation;//glabal camera transformation
+	//relative camera pose parameters
+	std::vector<cv::Mat_<float>> relativeCameraTransformation;//relative camera transformation
+	//mean of all relative camera transformation
+	cv::Mat_<float> meanRelativeTransformation;
+};
+
+
+#endif // !_CALIBRATION_H_
