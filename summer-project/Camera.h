@@ -1,5 +1,5 @@
-#ifndef _CALIBRATION_H_
-#define _CALIBRATION_H_
+#ifndef _CAMERA_H_
+#define _CAMERA_H_
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -56,4 +56,4 @@ private:
 };
 
 
-#endif // !_CALIBRATION_H_
+#endif // !_CAMERA_H_
