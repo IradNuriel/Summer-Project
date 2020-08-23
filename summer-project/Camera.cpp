@@ -9,7 +9,7 @@ Camera::Camera(int numOfImages,std::string directoryPath,int chessBoardRows,int 
 }
 
 
-void Camera::getCalibrationParameters(cv::Mat_<double>& cameraMatrixOut, std::vector<cv::Mat>& rvecsOut, std::vector<cv::Mat>& tvecsOut) {
+void Camera::getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, std::vector<cv::Mat>& rvecsOut, std::vector<cv::Mat>& tvecsOut) {
 	cameraMatrixOut = this->cameraMatrix;
 	rvecsOut = this->rvecs;
 	tvecsOut = this->tvecs;
@@ -64,7 +64,7 @@ void Camera::calcCameraIntrinsicParameters() {
 		}
 		cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY);//gray<--grayscale version of the image
 		std::vector<cv::Point2f> corners;//corners
-		bool ret = cv::findChessboardCorners(gray, cv::Size(this->chessBoardRows, this->chessBoardCols), corners);//opencv magic to detect the chessboard corners
+		bool ret = cv::findChessboardCorners(gray, cv::Size(this->chessBoardCols, this->chessBoardRows), corners);//opencv magic to detect the chessboard corners
 		if (ret) {//if detected correctly
 			objPoints.push_back(objp);//points in real life+=constant
 			cv::cornerSubPix(gray, corners, cv::Size(11, 11), cv::Size(-1, -1), criteria);//refine image points of corners
@@ -81,9 +81,9 @@ void Camera::calcCameraIntrinsicParameters() {
 //function to create an array of points from the form: (j,i,0) where 0<=i<this->chessBoardCols and 0<=j<this->chessBoardRows
 std::vector<cv::Point3f> Camera::dynamicallyCreateObjp() {
 	std::vector<cv::Point3f> objp;
-	for (int i = 0; i < this->chessBoardCols;i++) {
-		for (int j = 0; j < this->chessBoardRows; j++) {
-			objp.push_back(cv::Point3f(j+0.0f, i+0.0f, 0.0));
+	for (int i = 0; i < this->chessBoardRows;i++) {
+		for (int j = 0; j < this->chessBoardCols; j++) {
+			objp.push_back(cv::Point3f(j+0.0, i+0.0, 0.0));
 		}
 	}
 	return objp;
@@ -147,7 +147,7 @@ void Camera::calcMeanRelativeCameraPoseTransformation(){
 	for (int i = 1; i < this->numOfImages; i++) {
 		this->meanRelativeTransformation += this->relativeCameraTransformation[i];
 	}
-	this->meanRelativeTransformation = this->meanRelativeTransformation / this->numOfImages;
+	this->meanRelativeTransformation = this->meanRelativeTransformation / (this->numOfImages-1);
 }
 
 void Camera::calcAllCameraParameters() {//calculate camera parameters
@@ -160,24 +160,24 @@ void Camera::calcAllCameraParameters() {//calculate camera parameters
 
 std::ostream& operator<<(std::ostream& out, const Camera& camera) {
 	out << "Camera parameters[" << std::endl;
-	out << "Camera Matrix: " << camera.cameraMatrix << "," <<std::endl;
-	out << "Rotation Matrix Vector:[" << std::endl;
+	out << "Camera Matrix: " << std::endl << cv::format(camera.cameraMatrix,cv::Formatter::FMT_NUMPY) << "," <<std::endl;
+	out << "Rotation Matrix Vector[" << std::endl;
 	for (cv::Mat rot : camera.rvecs) {
-		out << rot << ((rot.data==(camera.rvecs[camera.rvecs.size()-1].data))? "],":"," )<< std::endl;
+		out << cv::format(rot,cv::Formatter::FMT_NUMPY) << ((rot.data==(camera.rvecs[camera.rvecs.size()-1].data))? "],":"," )<< std::endl;
 	}
 	out << "Translation Matrix Vector[" << std::endl;
 	for (cv::Mat trans : camera.tvecs) {
-		out << trans << ((trans.data == (camera.tvecs[camera.tvecs.size() - 1].data)) ? "]," : ",") << std::endl;
+		out << cv::format(trans, cv::Formatter::FMT_NUMPY) << ((trans.data == (camera.tvecs[camera.tvecs.size() - 1].data)) ? "]," : ",") << std::endl;
 	}
 	out << "Global Transformation Matrix Vector[" << std::endl;
 	for (cv::Mat trans : camera.globalCameraTransformation) {
-		out << trans << ((trans.data == (camera.globalCameraTransformation[camera.globalCameraTransformation.size() - 1].data)) ? "]," : ",") << std::endl;
+		out << cv::format(trans, cv::Formatter::FMT_NUMPY) << ((trans.data == (camera.globalCameraTransformation[camera.globalCameraTransformation.size() - 1].data)) ? "]," : ",") << std::endl;
 	}
-	out << "Relative Transformation Matrix Vector[:" << std::endl;
+	out << "Relative Transformation Matrix Vector[" << std::endl;
 	for (cv::Mat trans : camera.relativeCameraTransformation) {
-		out << trans << ((trans.data == (camera.relativeCameraTransformation[camera.relativeCameraTransformation.size() - 1].data)) ? "]," : ",") << std::endl;
+		out << cv::format(trans, cv::Formatter::FMT_NUMPY) << ((trans.data == (camera.relativeCameraTransformation[camera.relativeCameraTransformation.size() - 1].data)) ? "]," : ",") << std::endl;
 	}
-	out << "Mean Relative Transformation Matrix: " << camera.meanRelativeTransformation << std::endl;
+	out << "Mean Transformation Matrix: " << std::endl << cv::format(camera.meanRelativeTransformation,cv::Formatter::FMT_NUMPY) << std::endl;
 	return out;
 }
 

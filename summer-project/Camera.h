@@ -20,7 +20,7 @@ public:
 	Camera(int numOfImages,std::string directoryPath,int chessBoardRows=7,int chessBoardCols=4);
 	friend std::ostream& operator<<(std::ostream& out, const Camera& camera);
 	//input: references to a cv::Mat_<double>, and two std::vector<cv::Mat> references, the return value will be in the parameters you've pass in 
-	void getCalibrationParameters(cv::Mat_<double>& cameraMatrixOut, std::vector<cv::Mat>& rvecsOut, std::vector<cv::Mat>& tvecsOut);
+	void getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, std::vector<cv::Mat>& rvecsOut, std::vector<cv::Mat>& tvecsOut);
 	//input: std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
 	void getCameraGlobalPoseTransformation(std::vector<cv::Mat_<float>>& transformationOut);
 	//std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
@@ -44,7 +44,7 @@ private:
 	//path to the images of the chessboard
 	std::string directoryPath;
 	//camera intrinsic parameters
-	cv::Mat_<double> cameraMatrix;//camera matrix
+	cv::Mat_<float> cameraMatrix;//camera matrix
 	std::vector<cv::Mat> rvecs;//camera rotation
 	std::vector<cv::Mat> tvecs;//camera translation
 	//global camera pose parameters
