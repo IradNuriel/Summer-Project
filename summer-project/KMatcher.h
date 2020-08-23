@@ -14,5 +14,6 @@ class KMatcher : public Matcher{
 public:
 	KMatcher();//defult c'tor
 	void match(std::vector<Image>& imgs) const;
+
 };
 #endif

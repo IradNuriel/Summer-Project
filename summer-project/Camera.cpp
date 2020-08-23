@@ -146,8 +146,10 @@ void Camera::calcMeanRelativeCameraPoseTransformation(){
 	this->meanRelativeTransformation = cv::Mat::zeros(cv::Size(4, 4), CV_32F);
 	for (int i = 1; i < this->numOfImages; i++) {
 		this->meanRelativeTransformation += this->relativeCameraTransformation[i];
+		std::cout << "rel:" << std::endl << cv::format(this->relativeCameraTransformation[i],cv::Formatter::FMT_NUMPY)<<std::endl<<"mean:"<<std::endl<<cv::format(this->meanRelativeTransformation,cv::Formatter::FMT_NUMPY)<<std::endl;
 	}
 	this->meanRelativeTransformation = this->meanRelativeTransformation / (this->numOfImages-1);
+	std::cout<<"mean:"<< std::endl << cv::format(this->meanRelativeTransformation, cv::Formatter::FMT_NUMPY) << std::endl;
 }
 
 void Camera::calcAllCameraParameters() {//calculate camera parameters

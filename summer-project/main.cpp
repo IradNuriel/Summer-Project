@@ -85,14 +85,14 @@ void checkKMatcher() {
 void checkCalibration() {
 	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
 	Camera riesPhoneCamera(30, "chessboardcalibration/", 7, 4);
-	std::cout << riesPhoneCamera;
+	//std::cout << riesPhoneCamera;
 }
 
 
 int main() {
 	//checkLinePart();
 	//checkORBDetectionPart();
-	//checkMatcher();
-	//checkKMatcher();
-	checkCalibration();
+	checkMatcher();
+	checkKMatcher();
+	//checkCalibration();
 }

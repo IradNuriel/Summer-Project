@@ -96,7 +96,6 @@ typedef pair<int, int> Node;
 		}
 	}
 	cout << "#Points: "<< points.size() << endl;
-
 }
 
 
