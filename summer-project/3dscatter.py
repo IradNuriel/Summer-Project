@@ -15,8 +15,8 @@ def plot(points):
         scatter.scatter(xs, ys, zs, marker='o')
 
     scatter.set_xlabel('X')
-    scatter.set_ylabel('Y')
-    scatter.set_zlabel('Z')
+    scatter.set_ylabel('Z')
+    scatter.set_zlabel('Y')
     plt.show()
 
 
