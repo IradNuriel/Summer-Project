@@ -1,24 +1,32 @@
 #include "KMatcher.h"
 
+void printAllPairsWithTooLowDistance(std::vector<std::pair<cv::Vec3d,cv::Vec3d>> coordsPairsList,int minDistance){
+	for (std::pair<cv::Vec3d, cv::Vec3d> coordPair : coordsPairsList) {
+		int distSquared = coordPair.first.dot(coordPair.first) + coordPair.second.dot(coordPair.second);
+		if (distSquared <= (minDistance*minDistance)) {
+			std::cout << "the pair: " << std::endl << "{coord 1: " << coordPair.first << std::endl << "coord 2: " << coordPair.second << "}" << std::endl;
+		}
+	}
+}
+
 KMatcher::KMatcher(){
 
 }
-using namespace std;
 template<class T, class S>
-bool inMap(map<T, S> m, const T& val) {
+bool isInMap(map<T, S> m, const T& val) {
 	return m.find(val) != m.end();
 }
 void KMatcher::match(std::vector<Image>& imgs) const{
 typedef pair<int, int> Node;
-	int n = imgs.size();
-	vector<vector<vector<Node>>> g(n); //graph
+    n = imgs.size();
+	std::vector<std::vector<std::vector<Node>>> g(n); //graph
 	//init photos and graph
 	for (int i = 0; i < n; i++) { 
 		this->initImg(imgs[i]);
 		g[i].resize(imgs[i].key.size());
 	}
 	// build graph
-	map<pair<Node, Node>, bool> edges;
+	std::map<std::pair<Node, Node>, bool> edges;
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; i < n; i++) {
 			auto ijMtach = this->match2(imgs[i], imgs[j]);
@@ -30,8 +38,8 @@ typedef pair<int, int> Node;
 			}
 		}
 	}
-	vector<vector<Node>> cliques;
-	vector<Vec3d> points;
+	std::vector<std::vector<Node>> cliques;
+	std::vector<cv::Vec3d> points;
 	for (int i = 0; i < n; i++) { 
 		for (int j = 0; j < g[i].size(); j++) { //try to find triangle include (i,j)
 			/*map<Node, int> neighbours;
@@ -55,7 +63,7 @@ typedef pair<int, int> Node;
 				if (neighbours[p] == -1) continue; //already in
 				bool inClique = true;
 				for (auto c : clique) { //check if all agree
-					if (!inMap(edges, { c, p })) {
+					if (!isInMap(edges, { c, p })) {
 						inClique = false;
 						break;
 					}
@@ -70,8 +78,7 @@ typedef pair<int, int> Node;
 					int i = node.first;
 					cv::Point2d pixel = imgs[i].key[node.second].pt;
 					Line line = imgs[i].lb.getLine(imgs[i].pos, {pixel.x,pixel.y});
-					clus.add(line);
-				}
+					clus.add(line);				}
 				if (clus.cost() <= Constants::GOOD_MATCH_COST) {
 					cout << clus << endl;
 					points.push_back(clus.getMiddlePoint());
@@ -79,7 +86,7 @@ typedef pair<int, int> Node;
 				}
 			}*/
 			if (g[i][j].size() > 1) { //dunb solution beacuse clique-based solution (^) works terrible
-				vector<Node> nodes(g[i][j]);
+				std::vector<Node> nodes(g[i][j]);
 				nodes.push_back({ i,j });
 				Cluster clus;
 				for (Node node : nodes) {
@@ -97,6 +104,3 @@ typedef pair<int, int> Node;
 	}
 	cout << "#Points: "<< points.size() << endl;
 }
-
-
-

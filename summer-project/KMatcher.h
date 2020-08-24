@@ -2,6 +2,7 @@
 #define _KMATCHER_H_
 #include <iostream>
 #include <vector>
+#include <map>
 #include <utility>
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
@@ -16,4 +17,6 @@ public:
 	void match(std::vector<Image>& imgs) const;
 
 };
+void printAllPairsWithTooLowDistance(std::vector<std::pair<cv::Vec3d, cv::Vec3d>> coordsPairsList, int minDistance = 2);
+
 #endif
