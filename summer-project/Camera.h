@@ -20,13 +20,9 @@ public:
 	Camera(int numOfImages,std::string directoryPath,int chessBoardRows=7,int chessBoardCols=4);
 	friend std::ostream& operator<<(std::ostream& out, const Camera& camera);
 	//input: references to a cv::Mat_<double>, and two std::vector<cv::Mat> references, the return value will be in the parameters you've pass in 
-	void getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, std::vector<cv::Mat>& rvecsOut, std::vector<cv::Mat>& tvecsOut);
+	void getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, cv::Mat_<float>& cameraMarixInverse, cv::Mat& disstortionVec);
 	//input: std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
-	void getCameraGlobalPoseTransformation(std::vector<cv::Mat_<float>>& transformationOut);
-	//std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
-	void getCameraRelativePoseTransformation(std::vector<cv::Mat_<float>>& transformationOut);
-	//cv::Mat_<float> reference, the return value will be in the parameters you've pass in
-	void getCameraMeanRelativePoseTransformation(cv::Mat_<float>& transformationOut);
+	void getCameraExtrinsicParam(cv::Mat_<float>& transformationOut);
 
 private:
 	void calcAllCameraParameters();
@@ -47,6 +43,7 @@ private:
 	cv::Mat_<float> cameraMatrix;//camera matrix
 	std::vector<cv::Mat> rvecs;//camera rotation
 	std::vector<cv::Mat> tvecs;//camera translation
+	cv::Mat distortionCoeff;
 	//global camera pose parameters
 	std::vector<cv::Mat_<float>> globalCameraTransformation;//glabal camera transformation
 	//relative camera pose parameters

@@ -9,21 +9,14 @@ Camera::Camera(int numOfImages,std::string directoryPath,int chessBoardRows,int 
 }
 
 
-void Camera::getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, std::vector<cv::Mat>& rvecsOut, std::vector<cv::Mat>& tvecsOut) {
+void Camera::getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, cv::Mat_<float>& cameraMatrixInverseOut, cv::Mat& distortionVec) {
 	cameraMatrixOut = this->cameraMatrix;
-	rvecsOut = this->rvecs;
-	tvecsOut = this->tvecs;
+	cameraMatrixInverseOut = this->cameraMatrix.inv();
+	distortionCoeff = this->distortionCoeff;
 }
 
-void Camera::getCameraGlobalPoseTransformation(std::vector<cv::Mat_<float>>& transformationOur) {
-	transformationOur = this->globalCameraTransformation;
-}
 
-void Camera::getCameraRelativePoseTransformation(std::vector<cv::Mat_<float>>& transformationOut) {
-	transformationOut = this->relativeCameraTransformation;
-}
-
-void Camera::getCameraMeanRelativePoseTransformation(cv::Mat_<float>& transformationOut) {
+void Camera::getCameraExtrinsicParam(cv::Mat_<float>& transformationOut) {
 	transformationOut = this->meanRelativeTransformation;
 }
 
@@ -71,9 +64,9 @@ void Camera::calcCameraIntrinsicParameters() {
 			imgPoints.push_back(corners);//points in image plane+=corners
 		}
 	}
-	cv::Mat distortionCoeff;//distortion coefficient 
+	//distortion coefficient 
 	time_t before = time(NULL);
-	calibrateCamera(objPoints, imgPoints, gray.size(), this->cameraMatrix, distortionCoeff, this->rvecs, this->tvecs);//opencv magic to get camera calibration
+	calibrateCamera(objPoints, imgPoints, gray.size(), this->cameraMatrix, this->distortionCoeff, this->rvecs, this->tvecs);//opencv magic to get camera calibration
 	time_t after = time(NULL);
 	std::cout << "time took for calibration:" << (after - before) << std::endl;
 }
@@ -146,10 +139,9 @@ void Camera::calcMeanRelativeCameraPoseTransformation(){
 	this->meanRelativeTransformation = cv::Mat::zeros(cv::Size(4, 4), CV_32F);
 	for (int i = 1; i < this->numOfImages; i++) {
 		this->meanRelativeTransformation += this->relativeCameraTransformation[i];
-		std::cout << "rel:" << std::endl << cv::format(this->relativeCameraTransformation[i],cv::Formatter::FMT_NUMPY)<<std::endl<<"mean:"<<std::endl<<cv::format(this->meanRelativeTransformation,cv::Formatter::FMT_NUMPY)<<std::endl;
 	}
 	this->meanRelativeTransformation = this->meanRelativeTransformation / (this->numOfImages-1);
-	std::cout<<"mean:"<< std::endl << cv::format(this->meanRelativeTransformation, cv::Formatter::FMT_NUMPY) << std::endl;
+	
 }
 
 void Camera::calcAllCameraParameters() {//calculate camera parameters
@@ -162,24 +154,10 @@ void Camera::calcAllCameraParameters() {//calculate camera parameters
 
 std::ostream& operator<<(std::ostream& out, const Camera& camera) {
 	out << "Camera parameters[" << std::endl;
-	out << "Camera Matrix: " << std::endl << cv::format(camera.cameraMatrix,cv::Formatter::FMT_NUMPY) << "," <<std::endl;
-	out << "Rotation Matrix Vector[" << std::endl;
-	for (cv::Mat rot : camera.rvecs) {
-		out << cv::format(rot,cv::Formatter::FMT_NUMPY) << ((rot.data==(camera.rvecs[camera.rvecs.size()-1].data))? "],":"," )<< std::endl;
-	}
-	out << "Translation Matrix Vector[" << std::endl;
-	for (cv::Mat trans : camera.tvecs) {
-		out << cv::format(trans, cv::Formatter::FMT_NUMPY) << ((trans.data == (camera.tvecs[camera.tvecs.size() - 1].data)) ? "]," : ",") << std::endl;
-	}
-	out << "Global Transformation Matrix Vector[" << std::endl;
-	for (cv::Mat trans : camera.globalCameraTransformation) {
-		out << cv::format(trans, cv::Formatter::FMT_NUMPY) << ((trans.data == (camera.globalCameraTransformation[camera.globalCameraTransformation.size() - 1].data)) ? "]," : ",") << std::endl;
-	}
-	out << "Relative Transformation Matrix Vector[" << std::endl;
-	for (cv::Mat trans : camera.relativeCameraTransformation) {
-		out << cv::format(trans, cv::Formatter::FMT_NUMPY) << ((trans.data == (camera.relativeCameraTransformation[camera.relativeCameraTransformation.size() - 1].data)) ? "]," : ",") << std::endl;
-	}
-	out << "Mean Transformation Matrix: " << std::endl << cv::format(camera.meanRelativeTransformation,cv::Formatter::FMT_NUMPY) << std::endl;
+	out << "Camera Matrix: " << std::endl << cv::format(camera.cameraMatrix,cv::Formatter::FMT_NUMPY) << "," <<std::endl << std::endl;
+	out << "Inverse Camera Matrix" << std::endl << cv::format(camera.cameraMatrix.inv(), cv::Formatter::FMT_NUMPY) << "," << std::endl << std::endl;
+	out << "distortion vector: " << std::endl << cv::format(camera.distortionCoeff, cv::Formatter::FMT_NUMPY) << "," << std::endl << std::endl;
+	out << "Mean Transformation Matrix: " << std::endl << cv::format(camera.meanRelativeTransformation,cv::Formatter::FMT_NUMPY) << "]" << std::endl;
 	return out;
 }
 

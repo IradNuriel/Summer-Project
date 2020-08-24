@@ -22,7 +22,7 @@ def plot(points):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='a script for 3d view of points')
-    parser.add_argument('--name', type=str, help='the file name which points you want to see', default="points.txt")
+    parser.add_argument('--name', type=str, help='the file name which points you want to see', default="D:\\points.txt")
 
     args = parser.parse_args()
     separators = [',', '[', ']']

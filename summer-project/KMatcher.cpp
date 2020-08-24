@@ -13,12 +13,12 @@ KMatcher::KMatcher(){
 
 }
 template<class T, class S>
-bool isInMap(map<T, S> m, const T& val) {
+bool isInMap(std::map<T, S> m, const T& val) {
 	return m.find(val) != m.end();
 }
 void KMatcher::match(std::vector<Image>& imgs) const{
-typedef pair<int, int> Node;
-    n = imgs.size();
+typedef std::pair<int, int> Node;
+    int n = imgs.size();
 	std::vector<std::vector<std::vector<Node>>> g(n); //graph
 	//init photos and graph
 	for (int i = 0; i < n; i++) { 
@@ -96,11 +96,11 @@ typedef pair<int, int> Node;
 					clus.add(line);
 				}
 				if (clus.cost() <= Constants::GOOD_MATCH_COST) {
-					cout << clus << endl;
+					std::cout << clus << std::endl;
 					points.push_back(clus.getMiddlePoint());
 				}
 			}
 		}
 	}
-	cout << "#Points: "<< points.size() << endl;
+	std::cout << "#Points: "<< points.size() << std::endl;
 }
