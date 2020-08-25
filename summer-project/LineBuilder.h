@@ -11,11 +11,13 @@
 class LineBuilder {
 public:
 	LineBuilder(std::vector<double> res = { 6000, 4000 }, std::vector<double> a = { 66.276, 46.861 }); // c'tor
-	Line getLine(Vec3d pos = Vec3d(), std::vector<double> pixel = {0,0} ) const;
+	void setPos(Vec3d pos);
+	Line getLine(std::vector<double> pixel = {0,0} ) const;
 	std::vector<Line> genLines(std::vector<std::vector<cv::Vec2f>> pixelList);
 protected:
 	std::vector<double> resolution; // the camera's resolution (horizontal, vertical)
 	std::vector<double> angle; // the camera's angle of view (horisontal, vertical)
+	Vec3d pos;
 	cv::Mat_<float> invCameraMatrix;
 	std::vector<cv::Mat_<float>> rotation;
 	std::vector<cv::Mat_<float>> translation;

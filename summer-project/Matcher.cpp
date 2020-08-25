@@ -46,32 +46,9 @@ std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat& img2,
 	return feature;
 }
 std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool drawMatch) const {
-	int n = img1.key.size(), m = img2.key.size();
-	Cluster clus;
-	/*
-	cv::Mat_<uchar> mask = cv::Mat_<uchar>(cv::Size(n, m));
-	for (int i = 0; i < n; ++i) {
-		cv::Point2d p1 = img1.key[i].pt;
-		Line l1 = img1.lb.getLine(img1.pos, { p1.x,p1.y });
-		clus.add(l1);
-		for (int j = 0; j < m; ++j) {
-			cv::Point2d p2 = img2.key[j].pt;
-			Line l2 = img2.lb.getLine(img2.pos, { p2.x,p2.y });
-			clus.add(l2);
-			mask.at<uchar>(i,j) = (clus.cost() < Constants::GOOD_MATCH_COST);
-			clus.remove(l2);
-		}
-		clus.remove(l1);
-	}*/
 	//k nearest neighbor matching
 	std::vector<std::vector<cv::DMatch>> knnMatches;
-	/*bool withMask = true;
-	if (withMask) {
-		this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, 2, mask, true);
-	}
-	else {*/
 	this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, 2);
-	
 	//-- Filter matches using the Lowe's ratio test
 	std::vector<cv::DMatch> goodMatches;
 	for (size_t i = 0; i < knnMatches.size(); i++) {
@@ -83,23 +60,17 @@ std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool drawMatch
 	std::vector<pKeyPoint> feature;
 	std::vector<cv::DMatch> betterMatch;
 	std::vector<cv::KeyPoint> nkey1, nkey2;
+	Cluster clus;
 	for (const cv::DMatch& match : goodMatches) {
 		cv::Point2d p1 = img1.key[match.queryIdx].pt, p2 = img2.key[match.trainIdx].pt;
-		Line l1 = img1.lb.getLine(img1.pos, { p1.x,p1.y });
-		Line l2 = img2.lb.getLine(img2.pos, { p2.x,p2.y });
+		Line l1 = img1.lb.getLine({ p1.x,p1.y });
+		Line l2 = img2.lb.getLine({ p2.x,p2.y });
 		clus.add(l1);
 		clus.add(l2);
 		if (clus.cost() < Constants::GOOD_MATCH_COST) {
-			if (clus.cost() < -Constants::GOOD_MATCH_COST) {
-				std::cout << "FUCK! " << clus << std::endl;
-			}
-			else {
-				std::cout << "GOOD! " << clus << std::endl;
-				betterMatch.push_back(match);
-				nkey1.push_back(img1.key[match.queryIdx]);
-				nkey2.push_back(img2.key[match.trainIdx]);
-			}
-			
+			betterMatch.push_back(match);
+			nkey1.push_back(img1.key[match.queryIdx]);
+			nkey2.push_back(img2.key[match.trainIdx]);
 		}
 		clus.remove(l1);
 		clus.remove(l2);

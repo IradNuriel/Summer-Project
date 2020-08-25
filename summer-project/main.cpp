@@ -23,7 +23,8 @@ Cluster getCluster(LineBuilder& lb, std::vector<std::vector<double>>& pixel, int
 	Cluster clus = Cluster();
 	int n = pixel.size();
 	for (int i = 0; i < n; i++) {
-		clus.add(lb.getLine({ 25.0*(i - offset),118,0 }, pixel[i]));
+		lb.setPos({25.0*(i - offset), 118, 0});
+		clus.add(lb.getLine(pixel[i]));
 	}
 	return clus;
 }
@@ -86,7 +87,7 @@ void checkKMatcher() {
 	for (const cv::Vec3d& point : points) pointsOut << point << std::endl;
 
 	std::vector<std::vector<cv::Vec3d>> groups = CloudDetector::detectGroups(points);
-	std::cout << "GROUPS: " << groups.size() << std::endl;
+	std::cout << "#GROUPS: " << groups.size() << std::endl;
 	std::ofstream avgPointsOut("avgpoints.txt");
 	for (const std::vector<cv::Vec3d>& group : groups) avgPointsOut << CloudDetector::avrage(group) << std::endl;
 }

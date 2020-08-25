@@ -12,7 +12,11 @@ LineBuilder::LineBuilder(std::vector<double> res, std::vector<double> a) {
 	
 }
 
-Line LineBuilder::getLine(Vec3d pos, std::vector<double> pixel) const {
+void LineBuilder::setPos(Vec3d pos){
+	this->pos = pos;
+}
+
+Line LineBuilder::getLine(std::vector<double> pixel) const {
 	// casting int array into double array (to be used later)
 	std::vector<double> pixeld = std::vector<double>(2);
 	std::copy(std::begin(pixel), std::end(pixel), std::begin(pixeld));
@@ -28,12 +32,12 @@ Line LineBuilder::getLine(Vec3d pos, std::vector<double> pixel) const {
 
 	Vec3d v = { temp[0], temp[1], 1 }; //declaring the 3d line vector based on the calculation above
 	
-	return Line(pos, v);
+	return Line(this->pos, v);
 
 }
 
 
-
+/*
 std::vector<Line> LineBuilder::genLines(std::vector<std::vector<cv::Vec2f>> pixelList) {
 	std::vector<std::vector<cv::Vec3f>> lines;
 	for (std::vector<cv::Vec2f> imagePixels : pixelList) {
@@ -76,4 +80,4 @@ std::vector<Line> LineBuilder::genLines(std::vector<std::vector<cv::Vec2f>> pixe
 		res.insert(res.end(), imageLines.begin(), imageLines.end());
 	}
 	return res;
-}
+}*/

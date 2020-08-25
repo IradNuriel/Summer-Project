@@ -49,7 +49,7 @@ typedef std::pair<int, int> Node;
 				for (Node node : nodes) {
 					int i = node.first;
 					cv::Point2d pixel = imgs[i].key[node.second].pt;
-					Line line = imgs[i].lb.getLine(imgs[i].pos, { pixel.x,pixel.y });
+					Line line = imgs[i].lb.getLine({ pixel.x,pixel.y });
 					clus.add(line);
 				}
 				if (clus.cost() <= Constants::GOOD_MATCH_COST) {
