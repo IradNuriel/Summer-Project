@@ -2,20 +2,29 @@
 #include "Line.h"
 
 // c'tor
-LineBuilder::LineBuilder(std::valarray<double> res, std::valarray<double> a) {
+LineBuilder::LineBuilder(std::vector<double> res, std::vector<double> a) {
 	resolution.resize(2);
 	std::copy(std::begin(res), std::end(res), std::begin(resolution));
-	angle = a * Constants::DEGREE_TO_RADIANS_RATIO; // degrees -> radians
+	// degrees -> radians
+	this->angle[0] = a[0] * Constants::DEGREE_TO_RADIANS_RATIO;
+	this->angle[1] = a[1] * Constants::DEGREE_TO_RADIANS_RATIO;
+	
 }
 
-Line LineBuilder::getLine(Vec3d pos, std::valarray<double> pixel) const {
+Line LineBuilder::getLine(Vec3d pos, std::vector<double> pixel) const {
 	// casting int array into double array (to be used later)
-	std::valarray<double> pixeld = std::valarray<double>(2);
+	std::vector<double> pixeld = std::vector<double>(2);
 	std::copy(std::begin(pixel), std::end(pixel), std::begin(pixeld));
 	
-	pixeld = pixeld - (resolution / 2.0); //normalizing pixel pos relative to center
+	//pixeld = pixeld - (resolution / 2.0); //normalizing pixel pos relative to center
+	pixeld[0] = pixeld[0] - (this->resolution[0] / 2.0);
+	pixeld[1] = pixeld[1] - (this->resolution[1] / 2.0);
 	pixeld[1] = -pixeld[1]; // coordinates (>x, ^y, .z)
-	std::valarray<double> temp = (pixeld * tan(angle / 2.0)) / (resolution / 2.0); // calculating x,y length relative to z (=1)
+
+	std::vector<double> temp;
+	temp[0]= (pixeld[0] * tan(this->angle[0] / 2.0)) / (this->resolution[0] / 2.0); // calculating x length relative to z (=1)
+	temp[1] = (pixeld[1] * tan(this->angle[1] / 2.0)) / (this->resolution[1] / 2.0); // calculating y length relative to z (=1)
+
 	Vec3d v = { temp[0], temp[1], 1 }; //declaring the 3d line vector based on the calculation above
 	
 	return Line(pos, v);
@@ -24,36 +33,46 @@ Line LineBuilder::getLine(Vec3d pos, std::valarray<double> pixel) const {
 
 
 
-
-/*
-def gen_lines(inv_camera_matrix, image_pixel, init_camera_rot, init_camera_pos, rotation, translation):
-	"""
-	:param inv_camera_matrix: inverse camera matrix
-	:param image_pixel: a 2D pixel array
-	:param init_camera_rot: initial camera rotation, for first image should be np.eye(3)
-	:param init_camera_pos: initial camera position, should be (0,0,0)
-	:param rotation: rotation between images
-	:param translation: translation between images
-	:return: resulting line of the given 2D pixels
-	"""
-	image_lines = [inv_camera_matrix.dot(np.array([x, y, 1])) for x, y in image_pixel]
-	image_lines = [line / np.linalg.norm(line, 2) for line in image_lines]
-	camera_poses = [init_camera_pos]
-
-	new_lines = [[]]
-	for image_line in lines[0]:
-		new_lines[0].append(Line(init_camera_pos, image_line))
-	rotation_all = init_camera_rot
-	for image_lines in lines[1:]:
-		last_camera_pos = camera_poses[-1]
-		current_camera_pos = rotation.dot(last_camera_pos) + translation
-		camera_poses.append(current_camera_pos)
-		rotation_all = rotation.dot(rotation_all)
-		current_directions = [rotation_all.dot(line) for line in image_lines]
-		new_lines.append([])
-		for direction in current_directions:
-			new_lines[-1].append(Line(current_camera_pos, direction))
-	return np.array(new_lines).transpose()
-
-
-*/
+std::vector<Line> LineBuilder::genLines(cv::Mat_<float> invCameraMatrix, std::vector<std::vector<cv::Vec2f>> pixelList, cv::Mat_<float> rotation, cv::Mat_<float> translation, cv::Mat_<float> initCameraRot, cv::Mat_<float> initCameraPos) {
+	std::vector<std::vector<cv::Vec3f>> lines;
+	for (std::vector<cv::Vec2f> imagePixels : pixelList) {
+		std::vector<cv::Vec3f> imageLines;
+		for (cv::Vec2f point : imagePixels) {
+			cv::Mat_<float> line=invCameraMatrix*(cv::Mat(cv::Vec3f(point[0],point[1],1)));
+			imageLines.push_back(cv::Vec3f(line.at<float>(0,0),line.at<float>(0,1),line.at<float>(0,2))/(line.dot(line)));
+		}
+		lines.push_back(imageLines);
+	}
+	std::vector<cv::Mat_<float>> cameraPoses;
+	cameraPoses.push_back(initCameraPos);
+	std::vector<std::vector<Line>> newLines;
+	newLines.push_back(std::vector<Line>());
+	for (cv::Vec3f imageLine : lines[0]) {
+		newLines[0].push_back(Line(initCameraPos, imageLine));
+	}
+	cv::Mat_<float> rotationAll = initCameraRot;
+	bool f = false;
+	for (std::vector<cv::Vec3f> imageLines : lines) {
+		if (f) {
+			cv::Mat_<float> lastCameraPos = cameraPoses[cameraPoses.size() - 1];
+			cv::Mat_<float> currentCameraPos = rotation.dot(lastCameraPos) + translation;
+			cameraPoses.push_back(currentCameraPos);
+			rotationAll = rotation * rotationAll;
+			std::vector<cv::Vec3f> currentDirections;
+			for (cv::Vec3f line : imageLines) {
+				cv::Mat_<float> mult = rotationAll * cv::Mat_<float>(line);
+				currentDirections.push_back(cv::Vec3f(mult.at<float>(0,0),mult.at<float>(0,1),mult.at<float>(0,2)));
+			}
+			newLines.push_back(std::vector<Line>());
+			for (cv::Vec3f direction : currentDirections) {
+				newLines[newLines.size() - 1].push_back(Line(currentCameraPos,direction));
+			}
+		}
+		f = true;
+	}
+	std::vector<Line> res;
+	for (std::vector<Line> imageLines : newLines) {
+		res.insert(res.end(), imageLines.begin(), imageLines.end());
+	}
+	return res;
+}
