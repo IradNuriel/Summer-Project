@@ -21,6 +21,7 @@ def plot(scatter, points, marker, s=1):
 
 
 def read_file(file):
+    separators = [',', '[', ']']
     return [tuple(map(float, functools.reduce(lambda s, sep: s.replace(sep, ' '), separators, line).split()))
                   for line in fpoints.read().split('\n') if line]
 
@@ -31,7 +32,6 @@ if __name__ == "__main__":
     parser.add_argument('--avgname', type=str, help='the file name which avg points you want to see', default="")
 
     args = parser.parse_args()
-    separators = [',', '[', ']']
     scatter = init_scatter()
     with open(args.name,"r") as fpoints:
         plot(scatter, read_file(fpoints), 'o', 2)
