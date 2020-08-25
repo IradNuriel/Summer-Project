@@ -16,7 +16,7 @@ namespace CloudDetector {
 	static double XYdistance(const Vec3d& a, const Vec3d& b, int X = 0, int Y = 2) { //distance only on the XY plane (when Z is higth)
 		return (a[X] - b[X])*(a[X] - b[X]) + (a[Y] - b[Y])*(a[Y] - b[Y]);
 	}
-	static std::vector<std::vector<int>> detectGroups(const std::vector<Vec3d>& points) {
+	static std::vector<std::vector<cv::Vec3d>> detectGroups(const std::vector<Vec3d>& points) {
 		int n = points.size();
 		////////////past ideas
 		/*
@@ -35,23 +35,31 @@ namespace CloudDetector {
 		std::sort(edges.begin(), edges.end());
 		*/
 		std::vector<bool> check(n);
-		std::vector<std::vector<int>> groups;
+		std::vector<std::vector<cv::Vec3d>> groups;
 		for (int i = 0; i < n; i++) {
 			if (check[i]) continue;
 			std::vector<int> group(1, i);
 			for (int j = i + 1; j < n; j++) {
 				if (check[j]) continue;
 				double ijdist = XYdistance(points[i], points[j]);
-				if (ijdist < Constants::MAX_R_FOR_BODY) {
+				if (ijdist < Constants::MAX_R_FOR_BODY * Constants::MAX_R_FOR_BODY) {
 					group.push_back(j);
 				}
 			}
 			if (group.size() >= Constants::MIN_POINTS_FOR_BODY) {
-				for (int ind : group) check[ind] = true;
-				groups.push_back(group);
+				groups.push_back({});
+				for (int ind : group) {
+					check[ind] = true;
+					groups.back().push_back(points[ind]);
+				}
 			}
 		}
 		return groups;
+	}
+	static Vec3d avrage(const std::vector<Vec3d>& points) {
+		Vec3d res;
+		for (auto point : points) res += point;
+		return res / int(points.size());
 	}
 };
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ctime>
+#include <fstream>
 #include "LineBuilder.h"
 #include "Cluster.h"
 #include "ORBDetector.h"
@@ -81,8 +82,10 @@ void checkKMatcher() {
 	}
 	KMatcher matcher;
 	std::vector<cv::Vec3d> points = matcher.match(images);
-	std::vector<std::vector<int>> groups = CloudDetector::detectGroups(points);
+	std::vector<std::vector<cv::Vec3d>> groups = CloudDetector::detectGroups(points);
 	std::cout << "GROUPS: " << groups.size() << std::endl;
+	std::ofstream out("avgpoint.txt");
+	for (const std::vector<cv::Vec3d>& group : groups) out << CloudDetector::avrage(group) << std::endl;
 }
 
 
