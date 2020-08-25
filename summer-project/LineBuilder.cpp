@@ -33,31 +33,31 @@ Line LineBuilder::getLine(Vec3d pos, std::vector<double> pixel) const {
 
 
 
-std::vector<Line> LineBuilder::genLines(cv::Mat_<float> invCameraMatrix, std::vector<std::vector<cv::Vec2f>> pixelList, cv::Mat_<float> rotation, cv::Mat_<float> translation, cv::Mat_<float> initCameraRot, cv::Mat_<float> initCameraPos) {
+std::vector<Line> LineBuilder::genLines(std::vector<std::vector<cv::Vec2f>> pixelList) {
 	std::vector<std::vector<cv::Vec3f>> lines;
 	for (std::vector<cv::Vec2f> imagePixels : pixelList) {
 		std::vector<cv::Vec3f> imageLines;
 		for (cv::Vec2f point : imagePixels) {
-			cv::Mat_<float> line=invCameraMatrix*(cv::Mat(cv::Vec3f(point[0],point[1],1)));
+			cv::Mat_<float> line=this->invCameraMatrix*(cv::Mat(cv::Vec3f(point[0],point[1],1)));
 			imageLines.push_back(cv::Vec3f(line.at<float>(0,0),line.at<float>(0,1),line.at<float>(0,2))/(line.dot(line)));
 		}
 		lines.push_back(imageLines);
 	}
 	std::vector<cv::Mat_<float>> cameraPoses;
-	cameraPoses.push_back(initCameraPos);
+	cameraPoses.push_back(this->initCameraPos);
 	std::vector<std::vector<Line>> newLines;
 	newLines.push_back(std::vector<Line>());
 	for (cv::Vec3f imageLine : lines[0]) {
-		newLines[0].push_back(Line(initCameraPos, imageLine));
+		newLines[0].push_back(Line(this->initCameraPos, imageLine));
 	}
-	cv::Mat_<float> rotationAll = initCameraRot;
+	cv::Mat_<float> rotationAll = this->initCameraRot;
 	bool f = false;
 	for (std::vector<cv::Vec3f> imageLines : lines) {
 		if (f) {
 			cv::Mat_<float> lastCameraPos = cameraPoses[cameraPoses.size() - 1];
-			cv::Mat_<float> currentCameraPos = rotation.dot(lastCameraPos) + translation;
+			cv::Mat_<float> currentCameraPos = this->rotation.dot(lastCameraPos) + this->translation;
 			cameraPoses.push_back(currentCameraPos);
-			rotationAll = rotation * rotationAll;
+			rotationAll = this->rotation * rotationAll;
 			std::vector<cv::Vec3f> currentDirections;
 			for (cv::Vec3f line : imageLines) {
 				cv::Mat_<float> mult = rotationAll * cv::Mat_<float>(line);
