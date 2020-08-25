@@ -18,7 +18,6 @@ public:
 	Camera();
 	Camera(const Camera& other);
 	Camera(cv::Mat_<float> cameraMatrix, cv::Mat distortionCoeff, cv::Mat_<float> transformation);
-	void fullFileName(unsigned int i);
 	Camera(int numOfImages,std::string directoryPath,int chessBoardRows=7,int chessBoardCols=4);
 	friend std::ostream& operator<<(std::ostream& out, const Camera& camera);
 	//input: references to a cv::Mat_<double>, and two std::vector<cv::Mat> references, the return value will be in the parameters you've pass in 

@@ -47,9 +47,9 @@ std::string Camera::fullFileName(unsigned int i) {
 }
 
 // this should be super fast
-void Camera::fileExists(string fileName) {
+bool Camera::fileExists(std::string fileName) {
 	struct stat buffer;   
-	return (stat (name.c_str(), &buffer) == 0); 
+	return (stat (fileName.c_str(), &buffer) == 0); 
 }
 
 //code based on python example by Rie Ruash, Reut Elboim and Yehonatan Leizerson.
