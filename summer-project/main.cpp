@@ -82,7 +82,7 @@ void checkKMatcher() {
 	matcher.match(images);
 }
 
-bool checkCalibration(string calibrationDir) {
+bool checkCalibration(std::string calibrationDir) {
 	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
 	try {
 		Camera riesPhoneCamera(30, calibrationDir, 7, 4);
@@ -95,12 +95,12 @@ bool checkCalibration(string calibrationDir) {
 	return true;
 }
 
-void storeCalibration(Camera* cams, string outputFile) {
+void storeCalibration(Camera* cams, std::string outputFile) {
 	
 }
 
 // read a calibration directory, store the calibration data in .json, and return a camera array
-Camera* newCalibration(string calibrationDir, string outputFile) {
+Camera* newCalibration(std::string calibrationDir, std::string outputFile) {
 	// create camera array
 	Camera* cams;
 	// ...
@@ -112,17 +112,20 @@ Camera* newCalibration(string calibrationDir, string outputFile) {
 	return cams;
 }
 
+
 // read calibration data from a .json file, and return a camera array
-Camera* readCalibration(string inputFile) {
+Camera* readCalibration(std::string inputFile) {
 	// convert .json to a camera array
+
 }
+
 
 int main() {
 	bool calibrationNow = true; // if this is set to false, the program will read calibration data
-	string calibrationDir = "chessboardcalibration/";
+	std::string calibrationDir = "chessboardcalibration/";
 	int n_photos;
 	
-	string camData = "camData.json";
+	std::string camData = "camData.json";
 	
 	// calibration
 	Camera* cams;
@@ -137,3 +140,4 @@ int main() {
 	// matching points
 	
 }
+

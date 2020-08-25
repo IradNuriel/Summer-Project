@@ -19,6 +19,9 @@ bool isInMap(std::map<T, S> m, const T& val) {
 void KMatcher::match(std::vector<Image>& imgs) const{
 typedef std::pair<int, int> Node;
     int n = imgs.size();
+	std::ofstream outfile;
+	outfile.open("D:\\points.txt");
+	outfile.flush();
 	std::vector<std::vector<std::vector<Node>>> g(n); //graph
 	//init photos and graph
 	for (int i = 0; i < n; i++) { 
@@ -97,10 +100,13 @@ typedef std::pair<int, int> Node;
 				}
 				if (clus.cost() <= Constants::GOOD_MATCH_COST) {
 					std::cout << clus << std::endl;
+					
+					outfile << clus.getMiddlePoint() << std::endl;
 					points.push_back(clus.getMiddlePoint());
 				}
 			}
 		}
 	}
+	outfile.close();
 	std::cout << "#Points: "<< points.size() << std::endl;
 }

@@ -24,6 +24,9 @@ public:
 	void getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, cv::Mat_<float>& cameraMarixInverse, cv::Mat& disstortionVec);
 	//input: std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
 	void getCameraExtrinsicParam(cv::Mat_<float>& transformationOut);
+	std::string fullFileName(unsigned int i);
+	bool fileExists(std::string fileName);
+
 
 private:
 	void calcAllCameraParameters();

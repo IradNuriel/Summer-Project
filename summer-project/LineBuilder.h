@@ -17,8 +17,8 @@ protected:
 	std::vector<double> resolution; // the camera's resolution (horizontal, vertical)
 	std::vector<double> angle; // the camera's angle of view (horisontal, vertical)
 	cv::Mat_<float> invCameraMatrix;
-	cv::Mat_<float> rotation;
-	cv::Mat_<float> translation;
+	std::vector<cv::Mat_<float>> rotation;
+	std::vector<cv::Mat_<float>> translation;
 	cv::Mat_<float> initCameraPos = cv::Mat::zeros(cv::Size(1,3),CV_32F);
 	cv::Mat_<float> initCameraRot=cv::Mat::eye(3,3,CV_32F);
 
