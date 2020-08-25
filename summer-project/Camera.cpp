@@ -1,9 +1,8 @@
 #include "Camera.h"
 
-Camera::Camera(int numOfImages,std::string directoryPath,int chessBoardRows,int chessBoardClos) {
+Camera::Camera(std::string directoryPath,int chessBoardRows,int chessBoardClos) {
 	this->chessBoardRows = chessBoardRows;
 	this->chessBoardCols = chessBoardClos;
-	this->numOfImages = numOfImages;
 	this->directoryPath = directoryPath;
 	this->calcAllCameraParameters();
 }
@@ -42,8 +41,15 @@ Camera::Camera(cv::Mat_<float> cameraMatrix, cv::Mat diffCoeff, cv::Mat_<float> 
 	this->meanRelativeTransformation = transformation;
 }
 
+void Camera::fullFileName(unsigned int i) {
+	return this->directoryPath + "(" + std::to_string(i) + ").jpeg";
+}
 
-
+// this should be super fast
+void Camera::fileExists(string fileName) {
+	struct stat buffer;   
+	return (stat (name.c_str(), &buffer) == 0); 
+}
 
 //code based on python example by Rie Ruash, Reut Elboim and Yehonatan Leizerson.
 void Camera::calcCameraIntrinsicParameters() {
@@ -53,8 +59,8 @@ void Camera::calcCameraIntrinsicParameters() {
 	std::vector<std::vector<cv::Point2f>> imgPoints;//2d points of the object in the image plane
 
 	cv::Mat gray;
-	for (int i = 0; i < this->numOfImages; i++) {//for any image
-		std::string filePath = this->directoryPath + "(" + std::to_string(i) + ").jpeg";
+	for (numOfImages = 0; fileExists(fullFileName(numOfImages)); numOfImages++) {//for any image
+		std::string filePath = fullFileName(numOfImages);
 		//CONVENTION: calibration images are sorted such that the i'th image is (i).jpeg
 		cv::Mat img = cv::imread(filePath);//reading the i'th image
 		if (img.empty()) {//if no image
@@ -88,7 +94,6 @@ std::vector<cv::Point3f> Camera::dynamicallyCreateObjp() {
 	return objp;
 }
 
-
 //code based of python code from Mark Fonaryov
 void Camera::calcGlobalCameraPoseTransformation() {
 	std::vector<cv::Mat> globalCameraRotation;//glabal camera rotation
@@ -113,7 +118,6 @@ void Camera::calcGlobalCameraPoseTransformation() {
 		globalCameraTranslation[i].copyTo(this->globalCameraTransformation[i](rect2));
 	}
 }
-
 
 void Camera::calcRelativeCameraPoseTransformation() {
 	std::vector<cv::Mat_<float>> relativeCameraRotation;//relative camera rotation
@@ -140,6 +144,7 @@ void Camera::calcRelativeCameraPoseTransformation() {
 		this->relativeCameraTransformation[i](rect2).copyTo(relativeCameraTranslation[i](rect3));
 	}
 }
+
 void Camera::calcMeanRelativeCameraPoseTransformation(){
 	//calculating the mean of all relative camera transformations.
 	this->meanRelativeTransformation = cv::Mat::zeros(cv::Size(4, 4), CV_32F);
@@ -150,16 +155,12 @@ void Camera::calcMeanRelativeCameraPoseTransformation(){
 	
 }
 
-
-
-
 void Camera::calcAllCameraParameters() {//calculate camera parameters
 	this->calcCameraIntrinsicParameters();
 	this->calcGlobalCameraPoseTransformation();
 	this->calcRelativeCameraPoseTransformation();
 	this->calcMeanRelativeCameraPoseTransformation();
 }
-
 
 std::ostream& operator<<(std::ostream& out, const Camera& camera) {
 	out << "Camera parameters[" << std::endl;
@@ -169,5 +170,3 @@ std::ostream& operator<<(std::ostream& out, const Camera& camera) {
 	out << "Mean Transformation Matrix: " << std::endl << cv::format(camera.meanRelativeTransformation,cv::Formatter::FMT_NUMPY) << "]" << std::endl;
 	return out;
 }
-
-
