@@ -15,7 +15,7 @@ typedef std::pair<cv::KeyPoint, cv::KeyPoint> pKeyPoint;
 class KMatcher : public Matcher{
 public:
 	KMatcher();//defult c'tor
-	void match(std::vector<Image>& imgs) const;
+	std::vector<cv::Vec3d> match(std::vector<Image>& imgs) const;
 
 };
 void printAllPairsWithTooLowDistance(std::vector<std::pair<cv::Vec3d, cv::Vec3d>> coordsPairsList, int minDistance = 2);

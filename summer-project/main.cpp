@@ -5,10 +5,11 @@
 #include "ORBDetector.h"
 #include "Matcher.h"
 #include "KMatcher.h"
-#include "Camera.h"
+//#include "Camera.h"
+#include "CloudDetector.h"
 
 
-#define NOAM_COMPUTER 0
+#define NOAM_COMPUTER 1
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
 
 
@@ -79,9 +80,13 @@ void checkKMatcher() {
 		images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
 	}
 	KMatcher matcher;
-	matcher.match(images);
+	std::vector<cv::Vec3d> points = matcher.match(images);
+	std::vector<std::vector<int>> groups = CloudDetector::detectGroups(points);
+	std::cout << "GROUPS: " << groups.size() << std::endl;
 }
 
+
+/*
 bool checkCalibration(std::string calibrationDir) {
 	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
 	try {
@@ -112,16 +117,15 @@ Camera* newCalibration(std::string calibrationDir, std::string outputFile) {
 	return cams;
 }
 
-
 // read calibration data from a .json file, and return a camera array
 Camera* readCalibration(std::string inputFile) {
 	// convert .json to a camera array
-
-}
-
+}*/
 
 int main() {
-	bool calibrationNow = true; // if this is set to false, the program will read calibration data
+	//checkMatcher();
+	checkKMatcher();
+	/*bool calibrationNow = true; // if this is set to false, the program will read calibration data
 	std::string calibrationDir = "chessboardcalibration/";
 	int n_photos;
 	
@@ -138,6 +142,5 @@ int main() {
 		return; // error
 	
 	// matching points
-	
+	*/
 }
-

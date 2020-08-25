@@ -3,10 +3,10 @@
 
 // c'tor
 LineBuilder::LineBuilder(std::vector<double> res, std::vector<double> a) {
-	this->resolution.resize(2);
-	this->angle.resize(2);
+	resolution.resize(2);
 	std::copy(std::begin(res), std::end(res), std::begin(resolution));
 	// degrees -> radians
+	this->angle.resize(2);
 	this->angle[0] = a[0] * Constants::DEGREE_TO_RADIANS_RATIO;
 	this->angle[1] = a[1] * Constants::DEGREE_TO_RADIANS_RATIO;
 	
@@ -22,8 +22,7 @@ Line LineBuilder::getLine(Vec3d pos, std::vector<double> pixel) const {
 	pixeld[1] = pixeld[1] - (this->resolution[1] / 2.0);
 	pixeld[1] = -pixeld[1]; // coordinates (>x, ^y, .z)
 
-	std::vector<double> temp;
-	temp.resize(2);
+	std::vector<double> temp(2);
 	temp[0]= (pixeld[0] * tan(this->angle[0] / 2.0)) / (this->resolution[0] / 2.0); // calculating x length relative to z (=1)
 	temp[1] = (pixeld[1] * tan(this->angle[1] / 2.0)) / (this->resolution[1] / 2.0); // calculating y length relative to z (=1)
 
@@ -49,19 +48,17 @@ std::vector<Line> LineBuilder::genLines(std::vector<std::vector<cv::Vec2f>> pixe
 	cameraPoses.push_back(this->initCameraPos);
 	std::vector<std::vector<Line>> newLines;
 	newLines.push_back(std::vector<Line>());
-	int i = 0;
 	for (cv::Vec3f imageLine : lines[0]) {
 		newLines[0].push_back(Line(this->initCameraPos, imageLine));
-		i = 1;
 	}
 	cv::Mat_<float> rotationAll = this->initCameraRot;
 	bool f = false;
 	for (std::vector<cv::Vec3f> imageLines : lines) {
 		if (f) {
 			cv::Mat_<float> lastCameraPos = cameraPoses[cameraPoses.size() - 1];
-			cv::Mat_<float> currentCameraPos = this->rotation[i].dot(lastCameraPos) + this->translation[i];
+			cv::Mat_<float> currentCameraPos = this->rotation.dot(lastCameraPos) + this->translation;
 			cameraPoses.push_back(currentCameraPos);
-			rotationAll = this->rotation[i] * rotationAll;
+			rotationAll = this->rotation * rotationAll;
 			std::vector<cv::Vec3f> currentDirections;
 			for (cv::Vec3f line : imageLines) {
 				cv::Mat_<float> mult = rotationAll * cv::Mat_<float>(line);
@@ -73,7 +70,6 @@ std::vector<Line> LineBuilder::genLines(std::vector<std::vector<cv::Vec2f>> pixe
 			}
 		}
 		f = true;
-		i++;
 	}
 	std::vector<Line> res;
 	for (std::vector<Line> imageLines : newLines) {

@@ -1,11 +1,11 @@
 #include "Camera.h"
 
-Camera::Camera(int numOfImages,std::string directoryPath,int chessBoardRows,int chessBoardClos) {
-	this->numOfImages = numOfImages;
+Camera::Camera(int numOfImages, std::string directoryPath,int chessBoardRows,int chessBoardClos) {
 	this->chessBoardRows = chessBoardRows;
 	this->chessBoardCols = chessBoardClos;
 	this->directoryPath = directoryPath;
 	this->calcAllCameraParameters();
+	this->numOfImages = numOfImages;
 }
 
 
@@ -47,9 +47,9 @@ std::string Camera::fullFileName(unsigned int i) {
 }
 
 // this should be super fast
-bool Camera::fileExists(std::string fileName) {
+void Camera::fileExists(string fileName) {
 	struct stat buffer;   
-	return (stat (fileName.c_str(), &buffer) == 0); 
+	return (stat (name.c_str(), &buffer) == 0); 
 }
 
 //code based on python example by Rie Ruash, Reut Elboim and Yehonatan Leizerson.
