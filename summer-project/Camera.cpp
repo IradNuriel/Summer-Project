@@ -36,6 +36,12 @@ Camera::Camera(const Camera& other) {
 	this->calcAllCameraParameters();
 }
 
+Camera::Camera(cv::Mat_<float> cameraMatrix, cv::Mat diffCoeff, cv::Mat_<float> transformation) {
+	this->cameraMatrix = cameraMatrix;
+	this->distortionCoeff = diffCoeff;
+	this->meanRelativeTransformation = transformation;
+}
+
 
 
 
@@ -143,6 +149,9 @@ void Camera::calcMeanRelativeCameraPoseTransformation(){
 	this->meanRelativeTransformation = this->meanRelativeTransformation / (this->numOfImages-1);
 	
 }
+
+
+
 
 void Camera::calcAllCameraParameters() {//calculate camera parameters
 	this->calcCameraIntrinsicParameters();
