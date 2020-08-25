@@ -53,7 +53,7 @@ typedef std::pair<int, int> Node;
 					clus.add(line);
 				}
 				if (clus.cost() <= Constants::GOOD_MATCH_COST) {
-					if (Constants::DEBUG) std::cout << clus << std::endl;
+					//if (Constants::DEBUG) std::cout << clus << std::endl;
 					points.push_back(clus.getMiddlePoint());
 				}
 			}

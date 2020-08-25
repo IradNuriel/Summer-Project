@@ -81,11 +81,14 @@ void checkKMatcher() {
 		images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
 	}
 	KMatcher matcher;
+	std::ofstream pointsOut("points.txt");
 	std::vector<cv::Vec3d> points = matcher.match(images);
+	for (const cv::Vec3d& point : points) pointsOut << point << std::endl;
+
 	std::vector<std::vector<cv::Vec3d>> groups = CloudDetector::detectGroups(points);
 	std::cout << "GROUPS: " << groups.size() << std::endl;
-	std::ofstream out("avgpoint.txt");
-	for (const std::vector<cv::Vec3d>& group : groups) out << CloudDetector::avrage(group) << std::endl;
+	std::ofstream avgPointsOut("avgpoints.txt");
+	for (const std::vector<cv::Vec3d>& group : groups) avgPointsOut << CloudDetector::avrage(group) << std::endl;
 }
 
 
