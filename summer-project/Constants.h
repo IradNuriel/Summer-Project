@@ -18,5 +18,9 @@ namespace Constants {
 //ratio of degrees->radians
 	const double DEGREE_TO_RADIANS_RATIO = M_PI/180.0;
 
+//maximum distance between points in cloud for person recognition
+	const double MAX_R_FOR_BODY = 30; //cm
+//minimum number of 3dpoints for person recognition
+	const int MIN_POINTS_FOR_BODY = 30;
 }
 #endif
