@@ -46,31 +46,32 @@ std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat& img2,
 	return feature;
 }
 std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool drawMatch) const {
+	int n = img1.key.size(), m = img2.key.size();
 	Cluster clus;
+	/*
+	cv::Mat_<uchar> mask = cv::Mat_<uchar>(cv::Size(n, m));
+	for (int i = 0; i < n; ++i) {
+		cv::Point2d p1 = img1.key[i].pt;
+		Line l1 = img1.lb.getLine(img1.pos, { p1.x,p1.y });
+		clus.add(l1);
+		for (int j = 0; j < m; ++j) {
+			cv::Point2d p2 = img2.key[j].pt;
+			Line l2 = img2.lb.getLine(img2.pos, { p2.x,p2.y });
+			clus.add(l2);
+			mask.at<uchar>(i,j) = (clus.cost() < Constants::GOOD_MATCH_COST);
+			clus.remove(l2);
+		}
+		clus.remove(l1);
+	}*/
 	//k nearest neighbor matching
 	std::vector<std::vector<cv::DMatch>> knnMatches;
-	bool withMask = false;
+	/*bool withMask = true;
 	if (withMask) {
-		int n = img1.key.size(), m = img2.key.size();
-		cv::Mat mask(cv::Size(n, m), CV_16U);
-		for (int i = 0; i < n; ++i) {
-			cv::Point2d p1 = img1.key[i].pt;
-			Line l1 = img1.lb.getLine(img1.pos, { p1.x,p1.y });
-			clus.add(l1);
-			for (int j = 0; j < m; ++j) {
-				cv::Point2d p2 = img2.key[j].pt;
-				Line l2 = img2.lb.getLine(img2.pos, { p2.x,p2.y });
-				clus.add(l2);
-				mask.at<int>(i, j) = (clus.cost() < Constants::GOOD_MATCH_COST);
-				clus.remove(l2);
-			}
-			clus.remove(l1);
-		}
 		this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, 2, mask, true);
 	}
-	else {
-		this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, 2);
-	}
+	else {*/
+	this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, 2);
+	
 	//-- Filter matches using the Lowe's ratio test
 	std::vector<cv::DMatch> goodMatches;
 	for (size_t i = 0; i < knnMatches.size(); i++) {
