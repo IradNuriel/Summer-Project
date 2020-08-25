@@ -5,10 +5,11 @@
 #include "ORBDetector.h"
 #include "Matcher.h"
 #include "KMatcher.h"
-#include "Camera.h"
+//#include "Camera.h"
+#include "CloudDetector.h"
 
 
-#define NOAM_COMPUTER 0
+#define NOAM_COMPUTER 1
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
 
 
@@ -79,10 +80,14 @@ void checkKMatcher() {
 		images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
 	}
 	KMatcher matcher;
-	matcher.match(images);
+	std::vector<cv::Vec3d> points = matcher.match(images);
+	std::vector<std::vector<int>> groups = CloudDetector::detectGroups(points);
+	std::cout << "GROUPS: " << groups.size() << std::endl;
 }
 
-bool checkCalibration(string calibrationDir) {
+
+/*
+bool checkCalibration(std::string calibrationDir) {
 	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
 	try {
 		Camera riesPhoneCamera(30, calibrationDir, 7, 4);
@@ -95,12 +100,12 @@ bool checkCalibration(string calibrationDir) {
 	return true;
 }
 
-void storeCalibration(Camera* cams, string outputFile) {
+void storeCalibration(Camera* cams, std::string outputFile) {
 	
 }
 
 // read a calibration directory, store the calibration data in .json, and return a camera array
-Camera* newCalibration(string calibrationDir, string outputFile) {
+Camera* newCalibration(std::string calibrationDir, std::string outputFile) {
 	// create camera array
 	Camera* cams;
 	// ...
@@ -113,16 +118,18 @@ Camera* newCalibration(string calibrationDir, string outputFile) {
 }
 
 // read calibration data from a .json file, and return a camera array
-Camera* readCalibration(string inputFile) {
+Camera* readCalibration(std::string inputFile) {
 	// convert .json to a camera array
-}
+}*/
 
 int main() {
-	bool calibrationNow = true; // if this is set to false, the program will read calibration data
-	string calibrationDir = "chessboardcalibration/";
+	//checkMatcher();
+	checkKMatcher();
+	/*bool calibrationNow = true; // if this is set to false, the program will read calibration data
+	std::string calibrationDir = "chessboardcalibration/";
 	int n_photos;
 	
-	string camData = "camData.json";
+	std::string camData = "camData.json";
 	
 	// calibration
 	Camera* cams;
@@ -135,5 +142,5 @@ int main() {
 		return; // error
 	
 	// matching points
-	
+	*/
 }

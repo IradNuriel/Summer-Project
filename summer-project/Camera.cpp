@@ -1,10 +1,11 @@
 #include "Camera.h"
 
-Camera::Camera(std::string directoryPath,int chessBoardRows,int chessBoardClos) {
+Camera::Camera(int numOfImages, std::string directoryPath,int chessBoardRows,int chessBoardClos) {
 	this->chessBoardRows = chessBoardRows;
 	this->chessBoardCols = chessBoardClos;
 	this->directoryPath = directoryPath;
 	this->calcAllCameraParameters();
+	this->numOfImages = numOfImages;
 }
 
 
@@ -41,7 +42,7 @@ Camera::Camera(cv::Mat_<float> cameraMatrix, cv::Mat diffCoeff, cv::Mat_<float> 
 	this->meanRelativeTransformation = transformation;
 }
 
-void Camera::fullFileName(unsigned int i) {
+std::string Camera::fullFileName(unsigned int i) {
 	return this->directoryPath + "(" + std::to_string(i) + ").jpeg";
 }
 

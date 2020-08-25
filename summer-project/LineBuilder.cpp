@@ -6,6 +6,7 @@ LineBuilder::LineBuilder(std::vector<double> res, std::vector<double> a) {
 	resolution.resize(2);
 	std::copy(std::begin(res), std::end(res), std::begin(resolution));
 	// degrees -> radians
+	this->angle.resize(2);
 	this->angle[0] = a[0] * Constants::DEGREE_TO_RADIANS_RATIO;
 	this->angle[1] = a[1] * Constants::DEGREE_TO_RADIANS_RATIO;
 	
@@ -21,7 +22,7 @@ Line LineBuilder::getLine(Vec3d pos, std::vector<double> pixel) const {
 	pixeld[1] = pixeld[1] - (this->resolution[1] / 2.0);
 	pixeld[1] = -pixeld[1]; // coordinates (>x, ^y, .z)
 
-	std::vector<double> temp;
+	std::vector<double> temp(2);
 	temp[0]= (pixeld[0] * tan(this->angle[0] / 2.0)) / (this->resolution[0] / 2.0); // calculating x length relative to z (=1)
 	temp[1] = (pixeld[1] * tan(this->angle[1] / 2.0)) / (this->resolution[1] / 2.0); // calculating y length relative to z (=1)
 
