@@ -82,17 +82,58 @@ void checkKMatcher() {
 	matcher.match(images);
 }
 
-void checkCalibration() {
+bool checkCalibration(string calibrationDir) {
 	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
-	Camera riesPhoneCamera(30, "chessboardcalibration/", 7, 4);
-	std::cout << riesPhoneCamera;
+	try {
+		Camera riesPhoneCamera(30, calibrationDir, 7, 4);
+		std::cout << riesPhoneCamera;
+	}
+	catch(const std::exception& e) {
+		std::cout << "Calibration check failed!" << e.what();
+		return false;
+	}
+	return true;
 }
 
+void storeCalibration(Camera* cams, string outputFile) {
+	
+}
+
+// read a calibration directory, store the calibration data in .json, and return a camera array
+Camera* newCalibration(string calibrationDir, string outputFile) {
+	// create camera array
+	Camera* cams;
+	// ...
+	
+	// store camera array in .json file
+	storeCalibration(cams, outputFile);
+	
+	// return camera array
+	return cams;
+}
+
+// read calibration data from a .json file, and return a camera array
+Camera* readCalibration(string inputFile) {
+	// convert .json to a camera array
+}
 
 int main() {
-	//checkLinePart();
-	//checkORBDetectionPart();
-	//checkMatcher();
-	//checkKMatcher();
-	checkCalibration();
+	bool calibrationNow = true; // if this is set to false, the program will read calibration data
+	string calibrationDir = "chessboardcalibration/";
+	int n_photos;
+	
+	string camData = "camData.json";
+	
+	// calibration
+	Camera* cams;
+	if (calibrationNow)
+		cams = newCalibration(calibrationDir, camData);
+	else if (checkCalibration(calibrationDir)){
+		cams = readCalibration(camData);
+	}
+	else
+		return; // error
+	
+	// matching points
+	
 }
