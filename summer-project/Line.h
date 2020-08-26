@@ -25,6 +25,7 @@ public:
 	Vec3d projectionOf(Vec3d x) const;/*function projectionOf,
 									  get a 3D point as an input represented by a vector,
 									  and return its projection on the line.*/
+	Line operator=(const Line& other);
 protected:
 	Vec3d originProjection; //Projection of the origin on the line
 	Vec3d v;           //Unit vector of the line's direction

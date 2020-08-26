@@ -31,6 +31,14 @@ void Line::setP(Vec3d p) {
 	this->originProjection = p - p.dot(this->v) * this->v;
 }
 
+
+Line Line::operator=(const Line& other) {
+	this->setP(other.getP());
+	this->setV(other.getV());
+	return *this;
+}
+
+
 Vec3d Line::projectionOf(Vec3d x) const {
 	return this->originProjection + x.dot(this->v) * this->v;
 }

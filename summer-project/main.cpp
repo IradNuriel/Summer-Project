@@ -10,7 +10,7 @@
 #include "CloudDetector.h"
 
 
-#define NOAM_COMPUTER 1
+#define NOAM_COMPUTER 0
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
 
 
@@ -23,7 +23,6 @@ Cluster getCluster(LineBuilder& lb, std::vector<std::vector<double>>& pixel, int
 	Cluster clus = Cluster();
 	int n = pixel.size();
 	for (int i = 0; i < n; i++) {
-		lb.setPos({25.0*(i - offset), 118, 0});
 		clus.add(lb.getLine(pixel[i]));
 	}
 	return clus;

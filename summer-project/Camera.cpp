@@ -1,54 +1,101 @@
 #include "Camera.h"
 
-Camera::Camera(std::string directoryPath,int chessBoardRows,int chessBoardClos) {
+Camera::Camera(std::string directoryPath, int cameraNum,int chessBoardRows,int chessBoardClos) {
 	this->chessBoardRows = chessBoardRows;
 	this->chessBoardCols = chessBoardClos;
 	this->directoryPath = directoryPath;
+	this->cameraNum = cameraNum;
 	this->calcAllCameraParameters();
 }
 
 
-void Camera::getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, cv::Mat_<float>& cameraMatrixInverseOut, cv::Mat& distortionVec) {
+void Camera::getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, cv::Mat_<float>& cameraMatrixInverseOut, cv::Mat& distortionVec) const {
 	cameraMatrixOut = this->cameraMatrix;
 	cameraMatrixInverseOut = this->cameraMatrix.inv();
-	distortionCoeff = this->distortionCoeff;
+	distortionVec = this->distortionCoeff;
 }
 
 
-void Camera::getCameraExtrinsicParam(cv::Mat_<float>& transformationOut) {
-	transformationOut = this->meanRelativeTransformation;
+void Camera::getCameraExtrinsicParam(cv::Mat_<float>& transformationOut) const {
+	if (this->cameraNum == 0) {
+		transformationOut = cv::Mat::eye(cv::Size(4, 4), CV_32F);
+	}
+	else {
+		cv::Mat_<float> currentRot = cv::Mat::eye(cv::Size(3, 3), CV_32F);
+		cv::Mat_<float> currentTrans = cv::Mat::zeros(cv::Size(1, 3), CV_32F);
+		int i;
+		cv::Rect rect1(0, 0, 3, 3);
+		cv::Rect rect2(0, 0, 1, 3),rect3(3,0,1,3);
+		for (i = 1; i < this->cameraNum && i<this->numOfImages; i++) {
+			cv::Mat_<float> lastRot = currentRot;
+			cv::Mat_<float> relativeRot=cv::Mat::zeros(cv::Size(3,3),CV_32F);
+			relativeRot(rect1).copyTo(this->relativeCameraTransformation[i](rect1));
+			cv::Mat_<float> mult = (relativeRot*lastRot);
+			mult.copyTo(currentRot(rect1));
+			cv::Mat_<float> lastTrans = currentTrans;
+			cv::Mat_<float> relativeTrans = cv::Mat::zeros(cv::Size(1, 3), CV_32F);
+			relativeTrans(rect2).copyTo(this->relativeCameraTransformation[i](rect3));
+			cv::Mat_<float> add = (relativeTrans+lastTrans);
+			add.copyTo(currentTrans(rect3));
+		}
+		if (i < this->cameraNum) {
+			std::cout << "Ilegal camera number" << std::endl;
+		}
+		else {
+			currentRot.copyTo(transformationOut(rect1));
+			currentTrans.copyTo(transformationOut(rect3));
+		}
+	}
+
 }
 
-Camera::Camera() {
-	this->chessBoardRows = 7;
-	this->chessBoardCols = 4;
-	this->numOfImages = 30;
-	this->directoryPath = "chessboardcalibration/";
-	this->calcAllCameraParameters();
+
+Camera& Camera::no_camera() {
+	static Camera noCamera = Camera(-1);
+	return noCamera;
+}
+
+Camera::Camera(int num) {
+	if (num = -1) {
+		this->cameraNum = -1;
+		this->chessBoardCols = -1;
+		this->chessBoardRows = -1;
+		this->directoryPath = "";
+	}
+	else {
+		this->chessBoardRows = 7;
+		this->chessBoardCols = 4;
+		this->numOfImages = 30;
+		this->directoryPath = "chessboardcalibration/";
+		this->cameraNum = num;
+		this->calcAllCameraParameters();
+	}
 }
 
 Camera::Camera(const Camera& other) {
-	this->chessBoardCols = other.chessBoardCols;
-	this->chessBoardRows = other.chessBoardRows;
-	this->numOfImages = other.numOfImages;
-	this->directoryPath = other.directoryPath;
-	this->calcAllCameraParameters();
+	this->cameraMatrix = other.cameraMatrix;
+	this->cameraNum = other.cameraNum;
+	this->distortionCoeff = other.distortionCoeff;
+	this->relativeCameraTransformation = std::vector<cv::Mat_<float>>();
+	this->relativeCameraTransformation.resize(other.relativeCameraTransformation.size());
+	std::copy(other.relativeCameraTransformation.begin(), other.relativeCameraTransformation.end(), this->relativeCameraTransformation.begin());
 }
 
-Camera::Camera(cv::Mat_<float> cameraMatrix, cv::Mat diffCoeff, cv::Mat_<float> transformation) {
+Camera::Camera(cv::Mat_<float> cameraMatrix, cv::Mat diffCoeff, std::vector<cv::Mat_<float>> transformation, int cameraNum) {
 	this->cameraMatrix = cameraMatrix;
 	this->distortionCoeff = diffCoeff;
-	this->meanRelativeTransformation = transformation;
+	this->relativeCameraTransformation= transformation;
+	this->cameraNum = cameraNum;
 }
 
-void Camera::fullFileName(unsigned int i) {
+std::string Camera::fullFileName(unsigned int i) const {
 	return this->directoryPath + "(" + std::to_string(i) + ").jpeg";
 }
 
 // this should be super fast
-void Camera::fileExists(string fileName) {
+bool Camera::fileExists(std::string fileName) const {
 	struct stat buffer;   
-	return (stat (name.c_str(), &buffer) == 0); 
+	return (stat (fileName.c_str(), &buffer) == 0); 
 }
 
 //code based on python example by Rie Ruash, Reut Elboim and Yehonatan Leizerson.
