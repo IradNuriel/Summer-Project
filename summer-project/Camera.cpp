@@ -125,7 +125,7 @@ void Camera::calcCameraIntrinsicParameters() {
 	}
 	//distortion coefficient 
 	time_t before = time(NULL);
-	calibrateCamera(objPoints, imgPoints, gray.size(), this->cameraMatrix, this->distortionCoeff, this->rvecs, this->tvecs);//opencv magic to get camera calibration
+	cv::calibrateCamera(objPoints, imgPoints, gray.size(), this->cameraMatrix, this->distortionCoeff, this->rvecs, this->tvecs);//opencv magic to get camera calibration
 	time_t after = time(NULL);
 	std::cout << "time took for calibration:" << (after - before) << std::endl;
 }

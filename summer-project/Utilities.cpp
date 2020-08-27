@@ -15,11 +15,12 @@ namespace Utilities {
 	// try and load the given image with the known suffices
 	cv::Mat tryLoad(const std::string folderName, const int cameraID, const int frameID) {
 		for (int k = 0; k < Constants::N_SUFFICES; k++) {
-			std::string path = folderName + std::to_string(cameraID) + "_" +
-				std::to_string(frameID)+ "." + Constants::SUFFICES[k];
-			if (fileExists(path)
-				return cv::imread(cv::samples::findFile(path), IMREAD_ANYCOLOR)
+			std::string path = folderName + std::to_string(cameraID) + "_" +std::to_string(frameID)+ "." + Constants::SUFFICES[k];
+			if (fileExists(path)) {
+				return cv::imread(cv::samples::findFile(path), cv::IMREAD_ANYCOLOR);
+			}
 		}
-		return NULL;
+		std::string	message = ("File not Found, cameraIdx=" + std::to_string(cameraID) + ", frameIdx=" + std::to_string(frameID));
+		throw new std::exception(message.c_str());
 	}
 }

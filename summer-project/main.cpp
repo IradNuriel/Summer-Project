@@ -57,7 +57,7 @@ void checkMatcher() {
 	std::vector<Image> images;
 	for (int i = -2; i <= 3; i++) {
 		cv::Mat src = cv::imread(cv::samples::findFile(path(i)));
-		images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
+		//images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
 	}
 	times.push_back(high_resolution_clock::now());
 	Matcher mat;
@@ -77,7 +77,7 @@ void checkKMatcher() {
 	std::vector<Image> images;
 	for (int i = -2; i <= 3; i++) {
 		cv::Mat src = cv::imread(cv::samples::findFile(path(i)));
-		images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
+		//images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
 	}
 	KMatcher matcher;
 	std::ofstream pointsOut("points.txt");
@@ -94,7 +94,7 @@ void checkKMatcher() {
 bool checkCalibration(std::string calibrationDir) {
 	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
 	try {
-		Camera riesPhoneCamera(30, calibrationDir, 7, 4);
+		Camera riesPhoneCamera(calibrationDir, 7, 4);
 		std::cout << riesPhoneCamera;
 	}
 	catch(const std::exception& e) {
@@ -104,14 +104,14 @@ bool checkCalibration(std::string calibrationDir) {
 	return true;
 }
 
-void storeCalibration(Camera* cams, std::string outputFile) {
+void storeCalibration(std::vector<Camera> cams, std::string outputFile) {
 	
 }
 
 // read a calibration directory, store the calibration data in .json, and return a camera array
-Camera* newCalibration(std::string calibrationDir, std::string outputFile) {
+std::vector<Camera> newCalibration(std::string calibrationDir, std::string outputFile) {
 	// create camera array
-	Camera* cams;
+	std::vector<Camera> cams;
 	// ...
 	
 	// store camera array in .json file
@@ -122,7 +122,7 @@ Camera* newCalibration(std::string calibrationDir, std::string outputFile) {
 }
 
 // read calibration data from a .json file, and return a camera array
-Camera* readCalibration(std::string inputFile) {
+std::vector<Camera> readCalibration(std::string inputFile) {
 	// convert .json to a camera array
 }
 
@@ -133,50 +133,51 @@ void initCameras(const std::vector<Camera>& cameras) {
 
 int main() {
 	// check k-matcher
-	checkKMatcher();
+	//checkKMatcher();
 
 	bool calibrationNow = true; // if this is set to false, the program will read calibration data
-	std::string calibrationDir = "chessboardcalibration/";
-	int n_photos;
+	std::string calibrationDir = "randomPattern/";
 	
 	std::string camData = "camData.xml";
 	
 	// calibration
 	std::vector<Camera> cams;
-	if (calibrationNow)
+	if (calibrationNow) {
 		cams = newCalibration(calibrationDir, camData);
+	}
 	else if (checkCalibration(calibrationDir)) {
 		cams = readCalibration(camData);
 	}
-	else
+	else {
 		return; // error
-	
+	}
 	// initializing stuff
 	initCameras(cams);
 	
 	// k-matcher
 
 	// for each frame
-	for (int i = 0; Utilities::tryLoad(FOLDER1, 0, i) != NULL; i++) {
+	int i;
+	try {
+		for (i = 0; true; i++) {
 
-		// for each camera, retrieve the i'th frame
-		std::vector<Image> images;
+			// for each camera, retrieve the i'th frame
+			std::vector<Image> images;
 
-		for (int j = 0; j < cams.size(); j++) {
+			for (int j = 0; j < cams.size(); j++) {
 
-			// try loading the image with different suffices
-			cv::Mat imgMatrix = Utilities::tryLoad(FOLDER1, i, j);
-			if (imgMatrix == NULL) {
-				// fucking shit (no suffice worked)
-				std::cout << "fucking shit fuck";
-				return;
+				// try loading the image with different suffices
+				cv::Mat imgMatrix = Utilities::tryLoad(FOLDER1, i, j);
+	
+				Image img = Image(j, imgMatrix);
+				images.push_back(img);
 			}
 
-			Image img = Image(j, imgMatrix);
-			images.push_back(img);
+			KMatcher km = KMatcher();
+			km.match(images);
 		}
-
-		KMatcher km = KMatcher(images);
-		km.match()
+	}
+	catch (std::exception e) {
+		std::cout << "finished running, finished at frame:" << i << std::endl;
 	}
 }
