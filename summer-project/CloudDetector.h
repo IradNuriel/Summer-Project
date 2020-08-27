@@ -1,8 +1,11 @@
 #ifndef _CloudDetector_H_
 #define _CloudDetector_H_
+
+#include <algorithm>
+
 #include "Cluster.h"
 #include "Constants.h"
-#include <algorithm>
+#include "Cloud.h"
 
 struct Edge {
 	int u, v;
@@ -11,12 +14,13 @@ struct Edge {
 		return w < o.w;
 	}
 };
+
 namespace CloudDetector {
 	//really important to be sure that X,Y is correct
-	static double XYdistance(const Vec3d& a, const Vec3d& b, int X = 0, int Y = 2) { //distance only on the XY plane (when Z is higth)
+	static double XYdistance(const Vec3d& a, const Vec3d& b, int X = 0, int Y = 2) { // distance only on the XY plane (when Z is height)
 		return (a[X] - b[X])*(a[X] - b[X]) + (a[Y] - b[Y])*(a[Y] - b[Y]);
 	}
-	static std::vector<std::vector<cv::Vec3d>> detectGroups(const std::vector<Vec3d>& points) {
+	static std::vector<Cloud> detectGroups(const std::vector<Vec3d>& points) {
 		int n = points.size();
 		////////////past ideas
 		/*
@@ -55,11 +59,6 @@ namespace CloudDetector {
 			}
 		}
 		return groups;
-	}
-	static Vec3d avrage(const std::vector<Vec3d>& points) {
-		Vec3d res;
-		for (auto point : points) res += point;
-		return res / int(points.size());
 	}
 };
 

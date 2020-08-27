@@ -16,12 +16,12 @@
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
 
 // read the cfg file
-void readCfg(std::string &camData, bool &calibrationNow)
-{
+void readCfg(std::string &inPath, std::string &camData, bool &calibrationNow) {
 	std::string buffer;
 	std::ifstream cfgFile(Constants::CFG_FILE_NAME);
-	std::getline(cfgFile, camData);
-	std::getline(cfgFile, buffer);
+	std::getline(cfgFile, inPath);	// read inPath
+	std::getline(cfgFile, camData);	// read camData
+	std::getline(cfgFile, buffer);	// read calibrationNow
 	calibrationNow = buffer.compare("true");
 	cfgFile.close();
 }
@@ -37,14 +37,15 @@ int main(int argc, char *argv[]) {
 	// otherwise, it will read from the .json file already containing the camera data.
 	bool calibrationNow = true;
 
-	// path to the .json file storing the cams' calibration data
-	std::string camData;
+	// path to the .xml file storing the cams' calibration data
+	std::string inPath;	 // path
+	std::string camData; // file name
 
 	// read from the .cfg file
-	readCfg(camData, calibrationNow);
+	readCfg(inPath, camData, calibrationNow);
 	
-	// get camera calibration data (from either a set of pictures taken by them or a .json file)
-	std::vector<Camera> cams = MultiCalibration::getCalibration(calibrationNow, Constants::CALIBRATION_DIR, camData);
+	// get camera calibration data (from either a set of pictures taken by them or a .xml file)
+	std::vector<Camera> cams = MultiCalibration::getCalibration(calibrationNow, inPath, camData);
 
 	// initialize LineBuilder cam list
 	initCameras(cams);
@@ -66,7 +67,9 @@ int main(int argc, char *argv[]) {
 
 			// match the retrieved images
 			KMatcher km;
-			km.match(images);
+			points = km.match(images);
+
+			vector<Cloud> clouds = CloudDetector::detectGroups(points);
 
 			i++;
 		}

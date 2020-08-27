@@ -2,12 +2,12 @@
 
 namespace Utilities {
 	// Generate fileName
-	std::string imgFileName(std::string folderPath, int cameraID, int frameID, std::string suffix) {
+	std::string imgFileName(const std::string folderPath, const int cameraID, const int frameID, const std::string suffix) {
 		return folderPath + std::to_string(cameraID) + "_" + std::to_string(frameID) + "." + suffix;
 	}
 
 	// This should be super fast
-	bool fileExists(std::string fileName) {
+	bool fileExists(const std::string fileName) {
 		struct stat buffer;
 		return (stat(fileName.c_str(), &buffer) == 0);
 	}

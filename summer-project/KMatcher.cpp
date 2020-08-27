@@ -1,6 +1,6 @@
 #include "KMatcher.h"
 
-void printAllPairsWithTooLowDistance(std::vector<std::pair<cv::Vec3d,cv::Vec3d>> coordsPairsList,int minDistance){
+void printAllPairsWithTooLowDistance(std::vector<std::pair<cv::Vec3d,cv::Vec3d>> coordsPairsList, int minDistance) {
 	for (std::pair<cv::Vec3d, cv::Vec3d> coordPair : coordsPairsList) {
 		int distSquared = coordPair.first.dot(coordPair.first) + coordPair.second.dot(coordPair.second);
 		if (distSquared <= (minDistance*minDistance)) {
@@ -16,7 +16,8 @@ template<class T, class S>
 bool isInMap(std::map<T, S> m, const T& val) {
 	return m.find(val) != m.end();
 }
-std::vector<cv::Vec3d> KMatcher::match(std::vector<Image>& imgs) const{
+
+std::vector<cv::Vec3d> KMatcher::match(std::vector<Image>& imgs) const {
 typedef std::pair<int, int> Node;
     int n = imgs.size();
 	std::vector<std::vector<std::vector<Node>>> g(n); //graph
