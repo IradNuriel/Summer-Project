@@ -6,7 +6,7 @@
 #include "ORBDetector.h"
 #include "Matcher.h"
 #include "KMatcher.h"
-//#include "Camera.h"
+#include "Camera.h"
 #include "CloudDetector.h"
 
 #define NOAM_COMPUTER 0
@@ -88,7 +88,7 @@ void checkKMatcher() {
 	for (const std::vector<cv::Vec3d>& group : groups) avgPointsOut << CloudDetector::avrage(group) << std::endl;
 }
 
-/*
+
 bool checkCalibration(std::string calibrationDir) {
 	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
 	try {
@@ -122,11 +122,11 @@ Camera* newCalibration(std::string calibrationDir, std::string outputFile) {
 // read calibration data from a .json file, and return a camera array
 Camera* readCalibration(std::string inputFile) {
 	// convert .json to a camera array
-}*/
+}
 
 // LineBuilder friend function
-void initCameras(const& std::vector<Camera> cameras) {
-	LineBuilder.cams = cameras;
+void initCameras(const std::vector<Camera>& cameras) {
+	LineBuilder::cams = cameras;
 }
 
 int main() {

@@ -94,7 +94,7 @@ std::string Camera::fullFileName(unsigned int i) const {
 
 // this should be super fast
 bool Camera::fileExists(std::string fileName) const {
-	struct stat buffer;   
+	struct stat buffer;
 	return (stat (fileName.c_str(), &buffer) == 0); 
 }
 

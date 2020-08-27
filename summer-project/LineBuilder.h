@@ -16,7 +16,7 @@ public:
 	Line getLine(std::vector<double> pixel = {0,0} ) const;
 	void setPos(const Vec3f& pos);
 	//std::vector<Line> genLines(std::vector<std::vector<cv::Vec2f>> pixelList);
-	friend void initCameras(const &std::_Vector_iterator<Camera> cameras)
+	friend void initCameras(const std::vector<Camera>& cameras);
 protected:
 	void setPos();
 	void setAngle(const std::vector<double>&);
