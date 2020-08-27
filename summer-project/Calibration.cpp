@@ -4,7 +4,7 @@
 
 
 
-std::vector<Camera> Calibration::multiCalibrate(int nCamera, std::string inPath, std::string outputFileName, int width, int height, int patternWidth, int patternHeight, bool showProcess = false) {
+void Calibration::multiCalibrate(int nCamera, std::string inPath, std::string outputFileName, int width, int height, int patternWidth, int patternHeight, bool showProcess) {
 	cv::Mat pattern = cv::imread(Constants::CALIBRATION_DIR + "/randPattern.jpg");
 	cv::randpattern::RandomPatternCornerFinder finder(width, height, Constants::MIN_HESSIAN);
 	finder.loadPattern(pattern);
@@ -52,6 +52,7 @@ std::vector<Camera> Calibration::parseParamsFile(std::string inputFileName) {
 		Camera camera(cameraMatrix, distortionCoeff, pose, i);
 		vect.push_back(camera);
 	}
+	return vect;
 }
 
 
