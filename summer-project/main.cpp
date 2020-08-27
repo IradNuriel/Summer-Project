@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctime>
 #include <fstream>
+
 #include "LineBuilder.h"
 #include "Cluster.h"
 #include "ORBDetector.h"
@@ -8,6 +9,7 @@
 #include "KMatcher.h"
 #include "Camera.h"
 #include "CloudDetector.h"
+#include "Utilities.h"
 
 #define NOAM_COMPUTER 0
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
@@ -140,7 +142,7 @@ int main() {
 	std::string camData = "camData.xml";
 	
 	// calibration
-	Camera* cams;
+	std::vector<Camera> cams;
 	if (calibrationNow)
 		cams = newCalibration(calibrationDir, camData);
 	else if (checkCalibration(calibrationDir)) {
@@ -149,7 +151,32 @@ int main() {
 	else
 		return; // error
 	
-	// matching points
+	// initializing stuff
 	initCameras(cams);
+	
+	// k-matcher
 
+	// for each frame
+	for (int i = 0; Utilities::tryLoad(FOLDER1, 0, i) != NULL; i++) {
+
+		// for each camera, retrieve the i'th frame
+		std::vector<Image> images;
+
+		for (int j = 0; j < cams.size(); j++) {
+
+			// try loading the image with different suffices
+			cv::Mat imgMatrix = Utilities::tryLoad(FOLDER1, i, j);
+			if (imgMatrix == NULL) {
+				// fucking shit (no suffice worked)
+				std::cout << "fucking shit fuck";
+				return;
+			}
+
+			Image img = Image(j, imgMatrix);
+			images.push_back(img);
+		}
+
+		KMatcher km = KMatcher(images);
+		km.match()
+	}
 }

@@ -5,13 +5,13 @@
 #include "Camera.h"
 #include "Constants.h"
 #include <vector>
-// use PI
 
 // this entire class was translated from python, orig. code by Licht
 class LineBuilder {
 public:
 	LineBuilder(std::vector<double> res = {1200,800}, std::vector<double> a = {66.276,46.861});
 	LineBuilder(Camera camera); // c'tor
+	LineBuilder(int id);
 	const LineBuilder& operator=(const LineBuilder& other);
 	Line getLine(std::vector<double> pixel = {0,0} ) const;
 	void setPos(const Vec3f& pos);

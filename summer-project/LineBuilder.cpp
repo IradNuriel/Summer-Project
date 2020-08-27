@@ -1,13 +1,13 @@
 #include "LineBuilder.h"
 #include "Line.h"
 
-// c'tor
+// Camera c'tor
 LineBuilder::LineBuilder(Camera camera) {
 	this->camera = camera;
 	this->setPos();
 }
 
-
+// Parameter c'tor
 LineBuilder::LineBuilder(std::vector<double> res,std::vector<double> a) {
 	resolution.resize(2);
 	std::copy(std::begin(res), std::end(res), std::begin(resolution));
@@ -15,6 +15,12 @@ LineBuilder::LineBuilder(std::vector<double> res,std::vector<double> a) {
 	this->angle.resize(2);
 	this->angle[0] = a[0] * Constants::DEGREE_TO_RADIANS_RATIO;
 	this->angle[1] = a[1] * Constants::DEGREE_TO_RADIANS_RATIO;
+}
+
+// ID Constructor
+LineBuilder::LineBuilder(int id) {
+	this->camera = cams[id];
+	this->setPos();
 }
 
 void LineBuilder::setPos(const cv::Vec3f& pos) {

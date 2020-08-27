@@ -1,9 +1,8 @@
 #include "Image.h"
 
-Image::Image(const cv::Mat & img, const cv::Vec3d & pos, const cv::Ptr<cv::ORB>& detector){
+Image::Image(const int id, const cv::Mat & img, const cv::Ptr<cv::ORB>& detector){
 	this->img = img;
-	this->pos = pos;
-	this->lb = LineBuilder({ 1.0*img.size[0], 1.0*img.size[1] });
+	this->lb = LineBuilder(id);
 	this->lb.setPos(this->pos);
 	if (detector) this->init(detector);
 }

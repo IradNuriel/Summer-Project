@@ -10,14 +10,14 @@
 #include "opencv2/features2d.hpp"
 #include "Matcher.h"
 
-
 typedef std::pair<cv::KeyPoint, cv::KeyPoint> pKeyPoint;
-class KMatcher : public Matcher{
+class KMatcher : public Matcher {
 public:
-	KMatcher();//defult c'tor
+	KMatcher();//default c'tor
 	std::vector<cv::Vec3d> match(std::vector<Image>& imgs) const;
-
+	
 };
+
 void printAllPairsWithTooLowDistance(std::vector<std::pair<cv::Vec3d, cv::Vec3d>> coordsPairsList, int minDistance = 2);
 
 #endif
