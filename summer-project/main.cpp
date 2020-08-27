@@ -71,6 +71,8 @@ int main(int argc, char *argv[]) {
 
 			std::vector<Cloud> clouds = CloudDetector::detectGroups(points);
 
+			// process clouds
+
 			i++;
 		}
 	}

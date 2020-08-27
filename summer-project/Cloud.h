@@ -7,6 +7,7 @@
 class Cloud {
 public:
 	Cloud(const std::vector<Vec3d> p);
+	insert(const Vec3d point);
 private:
 	std::vector<Vec3d> points;
 };

@@ -39,9 +39,13 @@ namespace CloudDetector {
 		std::sort(edges.begin(), edges.end());
 		*/
 		std::vector<bool> check(n);
-		std::vector<std::vector<cv::Vec3d>> groups;
+		std::vector<Cloud> clouds;
 		for (int i = 0; i < n; i++) {
+
+			// if this node is already in a cloud, skip it
 			if (check[i]) continue;
+
+			// find nearby free nodes
 			std::vector<int> group(1, i);
 			for (int j = i + 1; j < n; j++) {
 				if (check[j]) continue;
@@ -50,15 +54,20 @@ namespace CloudDetector {
 					group.push_back(j);
 				}
 			}
+
+			// check if the group size 
 			if (group.size() >= Constants::MIN_POINTS_FOR_BODY) {
-				groups.push_back({});
+				// add the new cloud to the cloud group
+				Cloud cloud;
 				for (int ind : group) {
+					// mark the points so that they don't get included in another cloud
 					check[ind] = true;
-					groups.back().push_back(points[ind]);
+					cloud.insert(points[ind]);
 				}
+				clouds.push_back(cloud);
 			}
 		}
-		return groups;
+		return clouds;
 	}
 };
 
