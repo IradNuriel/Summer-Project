@@ -10,7 +10,7 @@
 #include "Camera.h"
 #include "CloudDetector.h"
 #include "Utilities.h"
-#include "MultiCalibration.h"
+#include "Calibration.h"
 
 #define NOAM_COMPUTER 0
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 	readCfg(inPath, camData, calibrationNow);
 	
 	// get camera calibration data (from either a set of pictures taken by them or a .xml file)
-	std::vector<Camera> cams = MultiCalibration::getCalibration(calibrationNow, inPath, camData);
+	std::vector<Camera> cams = Calibration::getCalibration(calibrationNow, inPath, camData);
 
 	// initialize LineBuilder cam list
 	initCameras(cams);
@@ -67,9 +67,9 @@ int main(int argc, char *argv[]) {
 
 			// match the retrieved images
 			KMatcher km;
-			points = km.match(images);
+			std::vector<cv::Vec3d> points = km.match(images);
 
-			vector<Cloud> clouds = CloudDetector::detectGroups(points);
+			std::vector<Cloud> clouds = CloudDetector::detectGroups(points);
 
 			// process clouds
 

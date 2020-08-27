@@ -17,43 +17,20 @@ class Camera {
 public:
 	Camera(int num=0);
 	Camera(const Camera& other);
-	Camera(cv::Mat_<float> cameraMatrix, cv::Mat distortionCoeff, std::vector<cv::Mat_<float>> transformation,int cameraNum);
-	Camera(std::string directoryPath, int cameraNum, int chessBoardRows=7,int chessBoardCols=4);
+	Camera(cv::Mat_<float> cameraMatrix, cv::Mat distortionCoeff, cv::Mat_<float> transformation,int cameraNum);
 	friend std::ostream& operator<<(std::ostream& out, const Camera& camera);
 	//input: references to a cv::Mat_<double>, and two std::vector<cv::Mat> references, the return value will be in the parameters you've pass in 
 	void getCalibrationParameters(cv::Mat_<float>& cameraMatrixOut, cv::Mat_<float>& cameraMarixInverse, cv::Mat& disstortionVec) const;
 	//input: std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
 	void getCameraExtrinsicParam(cv::Mat_<float>& transformationOut) const;
-	std::string fullFileName(unsigned int i) const;
-	bool fileExists(std::string fileName) const;
 	static Camera& no_camera();
 private:
-	void calcAllCameraParameters();
-	//initialization functions
-	void calcMeanRelativeCameraPoseTransformation();
-	void calcRelativeCameraPoseTransformation();
-	void calcGlobalCameraPoseTransformation();
-	void calcCameraIntrinsicParameters();
-	std::vector<cv::Point3f> dynamicallyCreateObjp();
 	//the number of the camera(when cameras sorted from 1 in the most left to n in the most right)
 	int cameraNum;
-	//size of chessboard that the calibration performed on.
-	int chessBoardRows;
-	int chessBoardCols;
-	//num of images of the chessboard
-	int numOfImages;
-	//path to the images of the chessboard
-	std::string directoryPath;
 	//camera intrinsic parameters
 	cv::Mat_<float> cameraMatrix;//camera matrix
-	std::vector<cv::Mat> rvecs;//camera rotation
-	std::vector<cv::Mat> tvecs;//camera translation
 	cv::Mat distortionCoeff;
-	//global camera pose parameters
-	std::vector<cv::Mat_<float>> globalCameraTransformation;//glabal camera transformation
-	//relative camera pose parameters
-	std::vector<cv::Mat_<float>> relativeCameraTransformation;//relative camera transformation
-	//mean of all relative camera transformation
+	//camera pose parameters
 	cv::Mat_<float> meanRelativeTransformation;
 };
 
