@@ -7,15 +7,18 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
 #include "opencv2/ccalib/multicalib.hpp"
+
+#include "Camera.h"
 #include "Constants.h"
+#include "Utilities.h"
 #include <vector>
 #include <fstream>
 
 
 
 
-void multiCalibrate(int nCamera,std::string inputFileName,std::string inPath,std::string outputFileName,int width,int height,int patternWidth,int patternHeight,bool showProcess=false) {
-	cv::Mat pattern = cv::imread(inPath+"/randPattern.jpg");
+std::vector<Camera> multiCalibrate(int nCamera,std::string inPath,std::string outputFileName,int width,int height,int patternWidth,int patternHeight,bool showProcess=false) {
+	cv::Mat pattern = cv::imread(Constants::CALIBRATION_DIR+"/randPattern.jpg");
 	cv::randpattern::RandomPatternCornerFinder finder(width, height, Constants::MIN_HESSIAN);
 	finder.loadPattern(pattern);
 	std::vector<cv::Mat_<float>> cameraMatrixs;
@@ -24,7 +27,7 @@ void multiCalibrate(int nCamera,std::string inputFileName,std::string inPath,std
 	std::vector<cv::Mat> distortionCoeffs;
 	std::vector<cv::Mat_<float>> meanTranss;
 	for (int cameraIdx = 0; cameraIdx < nCamera; cameraIdx++) {
-		std::vector<cv::Mat> imgVec = getImageVector(inPath, cameraIdx);
+		std::vector<cv::Mat> imgVec = getImageVector(Constants::CALIBRATION_DIR, cameraIdx);
 		finder.computeObjectImagePoints(imgVec);
 		std::vector<cv::Mat> objPoints = finder.getObjectPoints();
 		std::vector<cv::Mat> imgPoints = finder.getImagePoints();
@@ -38,26 +41,76 @@ void multiCalibrate(int nCamera,std::string inputFileName,std::string inPath,std
 		tvecss.push_back(tvecs);
 		distortionCoeffs.push_back(distortionCoeff);
 	}
+	std::string inputFileName = inPath + "/imgList.xml";
+	generateImgList(inputFileName,nCamera,Constants::CALIBRATION_DIR);
 	cv::multicalib::MultiCameraCalibration multiCalib(cv::multicalib::MultiCameraCalibration::PINHOLE, nCamera, inputFileName, patternWidth, patternHeight, showProcess, Constants::MIN_HESSIAN);
 	multiCalib.run();
+
+	multiCalib.writeParameters(outputFileName);
 	
+}
 
+std::vector<Camera> parseParamsFile(std::string inputFileName) {
+	cv::FileStorage toParse(inputFileName, cv::FileStorage::READ);
+	int nCamera=0;
+	toParse["nCamera"] >> nCamera;
+	std::vector<Camera> vect;
+	for (int i = 0; i < nCamera; i++) {
+		cv::Mat_<float> cameraMatrix;//camera matrix
+		cv::Mat distortionCoeff;
+		cv::Mat pose;
+		toParse["camera_matrix_" + std::to_string(i)] >> cameraMatrix;
+		toParse["camera_distortion_" + std::to_string(i)] >> distortionCoeff;
+		toParse["camera_pose_" + std::to_string(i)] >> pose;
+		Camera camera(cameraMatrix, distortionCoeff, pose, i);
+		vect.push_back(camera);
+	}
 }
 
 
 
-cv::Mat getPattern(int width,int height) {
-	cv::randpattern::RandomPatternGenerator generator(width, height);
-	generator.generatePattern();
-	cv::Mat pattern = generator.getPattern();
-	return pattern;
+
+
+void generateImgList(std::string inFile,int nCamera,std::string inPath) {
+	std::ofstream imgListFile;
+	imgListFile.open(inFile);
+	imgListFile.flush();
+	imgListFile << "images" << "[";
+	for (int cameraIdx = 0; cameraIdx < nCamera; cameraIdx++) {
+		int suffix;
+		for (int frameIdx = 0; Utilities::prefixExist(inPath ,cameraIdx,frameIdx,suffix); frameIdx++) {
+			imgListFile << std::string(inPath + std::to_string(cameraIdx) + "_" + std::to_string(frameIdx) + Constants::SUFFICES[suffix]);
+		}
+	}
+	imgListFile << "]";
+	imgListFile.close();
 }
+
+std::vector<Camera> getCalibration(bool needCalibration, std::string inPath, std::string camData) {
+	if ((!fileExists(inPath+camData)) || needCalibration) {
+		multiCalibrate(calcNCamera(Constants::CALIBRATION_DIR),Constants::CALIBRATION_DIR,inPath+camData,425,300,28,20);
+	}
+	std::vector<Camera> cameras = parseParamsFile(inPath + camData);
+	return cameras;
+}
+
+
+int calcNCamera(std::string inPath) {
+	int nCamera=0;
+	int k;
+	for (int cameraIdx = 0; Utilities::prefixExist(inPath  ,cameraIdx ,0,k); cameraIdx++) {
+		nCamera++;
+	}
+	return nCamera;
+}
+
 
 std::vector<cv::Mat> getImageVector(std::string inPath,int cameraIdx) {
 	//dont know how to work with those kind of files, TODO: ask someone in the lab in thusday
 	std::vector<cv::Mat> imgVec;
-	for (int timeStemp = 0; fileExists(inPath + std::to_string(cameraIdx) + "_" + std::to_string(timeStemp)) + ".jpeg"; timeStemp++) {
-		cv::Mat img = cv::imread(inPath + std::to_string(cameraIdx) + "_" + std::to_string(timeStemp));
+	int k;
+	for (int timeStemp = 0; Utilities::prefixExist(inPath ,cameraIdx, timeStemp,k); timeStemp++) {
+		cv::Mat img = Utilities::tryLoad(inPath,cameraIdx,timeStemp);
 		if (img.empty()) {
 			std::cout << "FUCK" << std::endl;
 			continue;
