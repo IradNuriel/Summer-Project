@@ -7,7 +7,6 @@
 #include <vector>
 // use PI
 
-
 // this entire class was translated from python, orig. code by Licht
 class LineBuilder {
 public:
@@ -17,6 +16,7 @@ public:
 	Line getLine(std::vector<double> pixel = {0,0} ) const;
 	void setPos(const Vec3f& pos);
 	//std::vector<Line> genLines(std::vector<std::vector<cv::Vec2f>> pixelList);
+	friend void initCameras(const &std::_Vector_iterator<Camera> cameras)
 protected:
 	void setPos();
 	void setAngle(const std::vector<double>&);
@@ -26,6 +26,8 @@ protected:
 	std::vector<double> angle; // the camera's angle of view (horisontal, vertical)
 	Vec3d pos;
 	Camera& camera=Camera::no_camera();
+private:
+	static std::vector<Camera> cams;
 };
 
 #endif
