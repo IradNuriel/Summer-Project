@@ -14,7 +14,17 @@
 
 #define NOAM_COMPUTER 0
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
-#define CALIBRATION_DIR "randomPattern/"
+
+// read the cfg file
+void readCfg(std::string &camData, bool &calibrationNow)
+{
+	std::string buffer;
+	std::ifstream cfgFile(Constants::CFG_FILE_NAME);
+	std::getline(cfgFile, camData);
+	std::getline(cfgFile, buffer);
+	calibrationNow = buffer.compare("true");
+	cfgFile.close();
+}
 
 // LineBuilder friend function
 void initCameras(const std::vector<Camera>& cameras) {
@@ -23,19 +33,18 @@ void initCameras(const std::vector<Camera>& cameras) {
 
 int main(int argc, char *argv[]) {
 
-	// check and retrieve command line arguments
-	if (argc < 2) {
-		std::cout << "Invalid arguments" << std::endl;
-		return;
-	}
-	std::string camData(argv[1]);
-
 	// if this is set to true, the program will calculate calibration data from the calibration directory.
 	// otherwise, it will read from the .json file already containing the camera data.
 	bool calibrationNow = true;
+
+	// path to the .json file storing the cams' calibration data
+	std::string camData;
+
+	// read from the .cfg file
+	readCfg(camData, calibrationNow);
 	
 	// get camera calibration data (from either a set of pictures taken by them or a .json file)
-	std::vector<Camera> cams = MultiCalibration::getCalibration(calibrationNow, calibrationDir, camData);
+	std::vector<Camera> cams = MultiCalibration::getCalibration(calibrationNow, Constants::CALIBRATION_DIR, camData);
 
 	// initialize LineBuilder cam list
 	initCameras(cams);

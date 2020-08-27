@@ -29,5 +29,11 @@ namespace Constants {
 // Possible image suffices
 	const int N_SUFFICES = 3;
 	const std::string SUFFICES[3] =  {"jpg", "jpeg", "png"};
+
+// Calibration directory
+	const std::string CALIBRATION_DIR = "randomPattern/";
+
+// Program configuration file name
+	const std::string CFG_FILE_NAME = "init.cfg";
 }
 #endif
