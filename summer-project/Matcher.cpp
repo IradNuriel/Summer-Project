@@ -109,6 +109,3 @@ void Matcher::draw(const Image & img1, const Image & img2, const std::vector<cv:
 	cv::imshow(title, imgMatches);
 	cv::waitKey();
 }
-
-
-

@@ -9,6 +9,7 @@
 #include "Constants.h"
 
 namespace Utilities {
+	std::string imgFileName(std::string folderPath, int cameraID, int frameID, std::string suffix);
 	bool fileExists(std::string fileName);
 	cv::Mat tryLoad(const std::string folderName, const int cameraID, const int frameID) throw(std::exception);
 }

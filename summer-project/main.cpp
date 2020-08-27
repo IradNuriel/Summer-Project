@@ -10,171 +10,56 @@
 #include "Camera.h"
 #include "CloudDetector.h"
 #include "Utilities.h"
+#include "MultiCalibration.h"
 
 #define NOAM_COMPUTER 0
 #define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
-
-std::string path(int i) {
-	return FOLDER1 + std::to_string(i) + ".jpg";
-}
-
-Cluster getCluster(LineBuilder& lb, std::vector<std::vector<double>>& pixel, int offset=2) {
-	Cluster clus = Cluster();
-	int n = pixel.size();
-	for (int i = 0; i < n; i++) {
-		clus.add(lb.getLine(pixel[i]));
-	}
-	return clus;
-}
-
-void checkLinePart() {
-	LineBuilder lb = LineBuilder();
-	std::vector<std::vector<double>> pixel = { {5566, 1039}, { 4988,1032 }, { 4742,1021 }, { 4255, 1019 },{ 3747,1008 }, { 3544,1016 } };
-	std::vector<std::vector<double>> topcircle = { {3900, 1180}, { 3329,1175 }, { 3056,1177 }, { 2571,1190 }, { 2062,1188 }, { 1880,1206 } };
-	std::vector<std::vector<double>> power = { {4335, 2434}, { 3783,2428 }, { 3529,2437 }, { 3067,2446 }, { 2574,2448 }, { 2393,2454 } };
-	std::vector<std::vector<double>> desk = { {2269,2973},{1540,2977},{1123,2964},{511,2980} };
-	std::vector<std::vector<double>> remoteControl = { {3838,3781},{3093,3782},{2608,3789},{1941,3796},{1258,3803},{911,3767} };
-	std::vector<std::vector<double>> window = { {5784,2626},{5133,2635},{4473,2637},{4091,2667} }; //offset=0
-	std::vector<Line> lines;
-	Cluster clus = getCluster(lb, topcircle);
-	std::cout << clus << std::endl;
-	clus = getCluster(lb, power);
-	std::cout << clus << std::endl;
-}
-
-void checkORBDetectionPart() {
-	ORBDetector orbDetector;
-	cv::Mat src = cv::imread(cv::samples::findFile(path(1)), IMREAD_ANYCOLOR);
-	orbDetector.addImageToSet(src);
-	orbDetector.showImageWithKeyPoints(0);
-	orbDetector.removeImageFromSet(0);
-}
-
-void checkMatcher() {
-	using namespace std::chrono;
-	std::vector<time_point<steady_clock>> times;
-	times.push_back(high_resolution_clock::now());
-	std::vector<Image> images;
-	for (int i = -2; i <= 3; i++) {
-		cv::Mat src = cv::imread(cv::samples::findFile(path(i)));
-		//images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
-	}
-	times.push_back(high_resolution_clock::now());
-	Matcher mat;
-	for (Image& img : images) mat.initImg(img);
-	times.push_back(high_resolution_clock::now());
-	int jump = 1;
-	for (int i = 0; i + jump < 5; i++) {
-		mat.match2(images[i], images[i+jump], true);
-	}
-	times.push_back(high_resolution_clock::now());
-	for (int i = 0; i + 1 < times.size(); i++) {
-		std::cout << duration_cast<std::chrono::milliseconds>(times[i+1]-times[i]).count() << std::endl;
-	}
-}
-
-void checkKMatcher() {
-	std::vector<Image> images;
-	for (int i = -2; i <= 3; i++) {
-		cv::Mat src = cv::imread(cv::samples::findFile(path(i)));
-		//images.push_back(Image(src, { 25.0*(i - 2),118,0 }));
-	}
-	KMatcher matcher;
-	std::ofstream pointsOut("points.txt");
-	std::vector<cv::Vec3d> points = matcher.match(images);
-	for (const cv::Vec3d& point : points) pointsOut << point << std::endl;
-
-	std::vector<std::vector<cv::Vec3d>> groups = CloudDetector::detectGroups(points);
-	std::cout << "#GROUPS: " << groups.size() << std::endl;
-	std::ofstream avgPointsOut("avgpoints.txt");
-	for (const std::vector<cv::Vec3d>& group : groups) avgPointsOut << CloudDetector::avrage(group) << std::endl;
-}
-
-
-bool checkCalibration(std::string calibrationDir) {
-	//caliber("chessboardcalibration/", 30, "riePhoneCameraCalibration.txt");
-	try {
-		Camera riesPhoneCamera(calibrationDir, 7, 4);
-		std::cout << riesPhoneCamera;
-	}
-	catch(const std::exception& e) {
-		std::cout << "Calibration check failed!" << e.what();
-		return false;
-	}
-	return true;
-}
-
-void storeCalibration(std::vector<Camera> cams, std::string outputFile) {
-	
-}
-
-// read a calibration directory, store the calibration data in .json, and return a camera array
-std::vector<Camera> newCalibration(std::string calibrationDir, std::string outputFile) {
-	// create camera array
-	std::vector<Camera> cams;
-	// ...
-	
-	// store camera array in .json file
-	storeCalibration(cams, outputFile);
-	
-	// return camera array
-	return cams;
-}
-
-// read calibration data from a .json file, and return a camera array
-std::vector<Camera> readCalibration(std::string inputFile) {
-	// convert .json to a camera array
-}
+#define CALIBRATION_DIR "randomPattern/"
 
 // LineBuilder friend function
 void initCameras(const std::vector<Camera>& cameras) {
 	LineBuilder::cams = cameras;
 }
 
-int main() {
-	// check k-matcher
-	//checkKMatcher();
+int main(int argc, char *argv[]) {
 
-	bool calibrationNow = true; // if this is set to false, the program will read calibration data
-	std::string calibrationDir = "randomPattern/";
+	// check and retrieve command line arguments
+	if (argc < 2) {
+		std::cout << "Invalid arguments" << std::endl;
+		return;
+	}
+	std::string camData(argv[1]);
+
+	// if this is set to true, the program will calculate calibration data from the calibration directory.
+	// otherwise, it will read from the .json file already containing the camera data.
+	bool calibrationNow = true;
 	
-	std::string camData = "camData.xml";
-	
-	// calibration
-	std::vector<Camera> cams;
-	if (calibrationNow) {
-		cams = newCalibration(calibrationDir, camData);
-	}
-	else if (checkCalibration(calibrationDir)) {
-		cams = readCalibration(camData);
-	}
-	else {
-		return; // error
-	}
-	// initializing stuff
+	// get camera calibration data (from either a set of pictures taken by them or a .json file)
+	std::vector<Camera> cams = MultiCalibration::getCalibration(calibrationNow, calibrationDir, camData);
+
+	// initialize LineBuilder cam list
 	initCameras(cams);
-	
-	// k-matcher
 
-	// for each frame
-	int i;
+	// for each frame, match common features captured by different cameras from different angles
+	int i = 0;
 	try {
-		for (i = 0; true; i++) {
-
+		while(true) {
 			// for each camera, retrieve the i'th frame
 			std::vector<Image> images;
-
 			for (int j = 0; j < cams.size(); j++) {
-
-				// try loading the image with different suffices
+				// try loading the image with all possible suffices
 				cv::Mat imgMatrix = Utilities::tryLoad(FOLDER1, i, j);
 	
+				// insert the loaded image into the image list
 				Image img = Image(j, imgMatrix);
 				images.push_back(img);
 			}
 
-			KMatcher km = KMatcher();
+			// match the retrieved images
+			KMatcher km;
 			km.match(images);
+
+			i++;
 		}
 	}
 	catch (std::exception e) {
