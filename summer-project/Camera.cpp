@@ -20,6 +20,12 @@ Camera& Camera::no_camera() {
 	return noCamera;
 }
 
+
+bool Camera::operator!=(const Camera & other) const {
+	return this->cameraNum != other.cameraNum;
+}
+
+
 Camera::Camera(int num) {
 	if (num = -1) {
 		this->cameraNum = -1;

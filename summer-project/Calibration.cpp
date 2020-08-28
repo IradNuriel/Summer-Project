@@ -5,32 +5,18 @@
 
 
 void Calibration::multiCalibrate(int nCamera, std::string inPath, std::string outputFileName, int width, int height, int patternWidth, int patternHeight, bool showProcess) {
-	cv::Mat pattern = cv::imread(Constants::CALIBRATION_DIR + "/randPattern.jpg");
-	cv::randpattern::RandomPatternCornerFinder finder(width, height, Constants::MIN_HESSIAN);
+	cv::Mat pattern = cv::imread(Constants::CALIBRATION_DIR + "randPattern.jpg");
+	cv::randpattern::RandomPatternCornerFinder finder(patternWidth, patternHeight, Constants::MIN_MATCHES_IN_CALIBRATION_IMAGES);
 	finder.loadPattern(pattern);
-	std::vector<cv::Mat_<float>> cameraMatrixs;
-	std::vector<std::vector<cv::Mat>> rvecss;//camera rotation
-	std::vector<std::vector<cv::Mat>> tvecss;//camera translation
-	std::vector<cv::Mat> distortionCoeffs;
-	std::vector<cv::Mat_<float>> meanTranss;
 	for (int cameraIdx = 0; cameraIdx < nCamera; cameraIdx++) {
 		std::vector<cv::Mat> imgVec = getImageVector(Constants::CALIBRATION_DIR, cameraIdx);
 		finder.computeObjectImagePoints(imgVec);
 		std::vector<cv::Mat> objPoints = finder.getObjectPoints();
 		std::vector<cv::Mat> imgPoints = finder.getImagePoints();
-		cv::Mat_<float> cameraMatrix;//camera matrix
-		std::vector<cv::Mat> rvecs;//camera rotation
-		std::vector<cv::Mat> tvecs;//camera translation
-		cv::Mat distortionCoeff;
-		cv::calibrateCamera(objPoints, imgPoints, imgVec[0].size(), cameraMatrix, distortionCoeff, rvecs, tvecs);//opencv magic to get camera calibration
-		cameraMatrixs.push_back(cameraMatrix);
-		rvecss.push_back(rvecs);
-		tvecss.push_back(tvecs);
-		distortionCoeffs.push_back(distortionCoeff);
 	}
-	std::string inputFileName = inPath + "/imgList.xml";
+	std::string inputFileName = inPath + "imgList.xml";
 	generateImgList(inputFileName, nCamera, Constants::CALIBRATION_DIR);
-	cv::multicalib::MultiCameraCalibration multiCalib(cv::multicalib::MultiCameraCalibration::PINHOLE, nCamera, inputFileName, patternWidth, patternHeight, showProcess, Constants::MIN_HESSIAN);
+	cv::multicalib::MultiCameraCalibration multiCalib(cv::multicalib::MultiCameraCalibration::PINHOLE, nCamera, inputFileName, patternWidth, patternHeight, 1 , showProcess, Constants::MIN_MATCHES_IN_CALIBRATION_IMAGES);
 	multiCalib.run();
 
 	multiCalib.writeParameters(outputFileName);
@@ -40,7 +26,7 @@ void Calibration::multiCalibrate(int nCamera, std::string inPath, std::string ou
 std::vector<Camera> Calibration::parseParamsFile(std::string inputFileName) {
 	cv::FileStorage toParse(inputFileName, cv::FileStorage::READ);
 	int nCamera = 0;
-	toParse["nCamera"] >> nCamera;
+	toParse["nCameras"] >> nCamera;
 	std::vector<Camera> vect;
 	for (int i = 0; i < nCamera; i++) {
 		cv::Mat_<float> cameraMatrix;//camera matrix
@@ -60,25 +46,25 @@ std::vector<Camera> Calibration::parseParamsFile(std::string inputFileName) {
 
 
 void Calibration::generateImgList(std::string inFile, int nCamera, std::string inPath) {
-	std::ofstream imgListFile;
-	imgListFile.open(inFile);
-	imgListFile.flush();
+	cv::FileStorage imgListFile(inFile, cv::FileStorage::WRITE);
 	imgListFile << "images" << "[";
+	imgListFile << std::string(Constants::CALIBRATION_DIR + "randPattern.jpg");
 	for (int cameraIdx = 0; cameraIdx < nCamera; cameraIdx++) {
 		int suffix;
 		for (int frameIdx = 0; Utilities::prefixExist(inPath, cameraIdx, frameIdx, suffix); frameIdx++) {
-			imgListFile << std::string(inPath + std::to_string(cameraIdx) + "_" + std::to_string(frameIdx) + Constants::SUFFICES[suffix]);
+			imgListFile << std::string(inPath + std::to_string(cameraIdx) + "_" + std::to_string(frameIdx) + "." + Constants::SUFFICES[suffix]);
 		}
 	}
 	imgListFile << "]";
-	imgListFile.close();
+	imgListFile.release();
 }
 
-std::vector<Camera> Calibration::getCalibration(bool needCalibration, std::string inPath, std::string camData) {
-	if ((!Utilities::fileExists(inPath + camData)) || needCalibration) {
+std::vector<Camera> Calibration::getCalibration(bool needCalibration, std::string inPath, std::string camData,int& nCamera) {
+	if ((!(Utilities::fileExists(inPath + camData))) || needCalibration) {
 		multiCalibrate(calcNCamera(Constants::CALIBRATION_DIR), Constants::CALIBRATION_DIR, inPath + camData, 425, 300, 28, 20);
 	}
 	std::vector<Camera> cameras = parseParamsFile(inPath + camData);
+	nCamera = cameras.size();
 	return cameras;
 }
 
@@ -103,7 +89,9 @@ std::vector<cv::Mat> Calibration::getImageVector(std::string inPath, int cameraI
 			std::cout << "FUCK" << std::endl;
 			continue;
 		}
-		imgVec.push_back(img);
+		cv::Mat gray;
+		cv::cvtColor(img, gray,cv::COLOR_BGR2GRAY);
+		imgVec.push_back(gray);
 	}
 	return imgVec;
 

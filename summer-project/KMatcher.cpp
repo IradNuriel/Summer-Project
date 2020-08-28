@@ -1,14 +1,5 @@
 #include "KMatcher.h"
 
-void printAllPairsWithTooLowDistance(std::vector<std::pair<cv::Vec3d,cv::Vec3d>> coordsPairsList, int minDistance) {
-	for (std::pair<cv::Vec3d, cv::Vec3d> coordPair : coordsPairsList) {
-		int distSquared = coordPair.first.dot(coordPair.first) + coordPair.second.dot(coordPair.second);
-		if (distSquared <= (minDistance*minDistance)) {
-			std::cout << "the pair: " << std::endl << "{coord 1: " << coordPair.first << std::endl << "coord 2: " << coordPair.second << "}" << std::endl;
-		}
-	}
-}
-
 KMatcher::KMatcher(){
 
 }
@@ -54,7 +45,7 @@ typedef std::pair<int, int> Node;
 					clus.add(line);
 				}
 				if (clus.cost() <= Constants::GOOD_MATCH_COST) {
-					//if (Constants::DEBUG) std::cout << clus << std::endl;
+					if (Constants::DEBUG) std::cout << clus << std::endl;
 					points.push_back(clus.getMiddlePoint());
 				}
 			}

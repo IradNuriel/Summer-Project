@@ -15,6 +15,7 @@ public:
 	const LineBuilder& operator=(const LineBuilder& other);
 	Line getLine(std::vector<double> pixel = {0,0} ) const;
 	void setPos(const Vec3f& pos);
+	cv::Vec3d getPos() const;
 	//std::vector<Line> genLines(std::vector<std::vector<cv::Vec2f>> pixelList);
 	friend void initCameras(const std::vector<Camera>& cameras);
 protected:
@@ -25,7 +26,8 @@ protected:
 	std::vector<double> resolution; // the camera's resolution (horizontal, vertical)
 	std::vector<double> angle; // the camera's angle of view (horisontal, vertical)
 	Vec3d pos;
-	Camera& camera=Camera::no_camera();
+	int cameraID;
+	Camera camera=Camera::no_camera();
 private:
 	static std::vector<Camera> cams;
 };

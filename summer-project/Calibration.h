@@ -18,7 +18,7 @@ namespace Calibration {
 	void multiCalibrate(int nCamera, std::string inPath, std::string outputFileName, int width, int height, int patternWidth, int patternHeight, bool showProcess = false);
 	std::vector<Camera> parseParamsFile(std::string inputFileName);
 	void generateImgList(std::string inFile, int nCamera, std::string inPath);
-	std::vector<Camera> getCalibration(bool needCalibration, std::string inPath, std::string camData);
+	std::vector<Camera> getCalibration(bool needCalibration, std::string inPath, std::string camData,int& nCamera);
 	int calcNCamera(std::string inPath);
 	std::vector<cv::Mat> getImageVector(std::string inPath, int cameraIdx);
 }

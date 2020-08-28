@@ -9,13 +9,19 @@ namespace Constants {
 	const float RATIO_THRESH = 0.75f;
 
 // For determining which matches are "good" matches
-	const double GOOD_MATCH_COST = 15; //units: cm^2
+	const double GOOD_MATCH_COST = 1000000000; //units: cm^2
 
 // DEBUG printing
 	const bool DEBUG = true;
 
 // Number of keypoints
 	const int MIN_HESSIAN = 1200;
+
+//Minimum distance between objects squared
+	const int MIN_DISTANCE_SQUARED_BETWEEN_OBJECTS = 4;
+
+//number of matches between pattern and image
+	const int MIN_MATCHES_IN_CALIBRATION_IMAGES = 1;
 
 // Ratio of degrees->radians
 	const double DEGREE_TO_RADIANS_RATIO = M_PI/180.0;

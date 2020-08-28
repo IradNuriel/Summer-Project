@@ -24,6 +24,7 @@ public:
 	//input: std::vector<cv::Mat_<float>> reference, the return value will be in the parameters you've pass in
 	void getCameraExtrinsicParam(cv::Mat_<float>& transformationOut) const;
 	static Camera& no_camera();
+	bool operator!=(const Camera& other) const;
 private:
 	//the number of the camera(when cameras sorted from 1 in the most left to n in the most right)
 	int cameraNum;

@@ -20,8 +20,7 @@ namespace Utilities {
 				return cv::imread(cv::samples::findFile(path), cv::IMREAD_ANYCOLOR);
 			}
 		}
-		std::string	message = ("File not Found, cameraIdx=" + std::to_string(cameraID) + ", frameIdx=" + std::to_string(frameID));
-		throw new std::exception(message.c_str());
+		return cv::Mat();
 	}
 
 	bool prefixExist(const std::string folderPath, const int cameraID, const int frameID, int& suffix) {

@@ -11,7 +11,7 @@
 namespace Utilities {
 	std::string imgFileName(std::string folderPath, int cameraID, int frameID, std::string suffix);
 	bool fileExists(std::string fileName);
-	cv::Mat tryLoad(const std::string folderPath, const int cameraID, const int frameID) throw(std::exception);
+	cv::Mat tryLoad(const std::string folderPath, const int cameraID, const int frameID);
 	bool prefixExist(const std::string folderPath, const int cameraID, const int frameID,int& suffix);
 }
 

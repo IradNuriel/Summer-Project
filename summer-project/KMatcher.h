@@ -18,6 +18,4 @@ public:
 	
 };
 
-void printAllPairsWithTooLowDistance(std::vector<std::pair<cv::Vec3d, cv::Vec3d>> coordsPairsList, int minDistance = 2);
-
 #endif
