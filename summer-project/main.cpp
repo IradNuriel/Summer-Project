@@ -41,9 +41,10 @@ void initCameras(const std::vector<Camera>& cameras) {
 void printToCloseClouds(std::vector<Cloud> clouds) {
 	for (int i = 0; i < clouds.size(); i++) {
 		for (int j = i + 1; j < clouds.size(); j++) {
-			int distSquared = clouds[i].average().dot(clouds[i].average()) + clouds[j].average().dot(clouds[j].average());
+			cv::Vec3d avg1=clouds[i].average(), avg2=clouds[j].average();
+			int distSquared = (avg1 - avg2).dot(avg1 - avg2);
 			if (distSquared <= (Constants::MIN_DISTANCE_SQUARED_BETWEEN_OBJECTS)) {
-				std::cout << "the clouds:" << std::endl << "cloud 1(mass center): " << clouds[i].average() << std::endl << "cloud 2(mass center): " <<  clouds[j].average() << std::endl;
+				std::cout << "there are clouds less than 2 meters apart: " << "the clouds:" << std::endl << "cloud 1(mass center): " << clouds[i].average() << std::endl << "cloud 2(mass center): " <<  clouds[j].average() << std::endl;
 			}
 		}
 	}

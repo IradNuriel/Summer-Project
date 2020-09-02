@@ -28,7 +28,7 @@ typedef std::pair<int, int> Node;
 	std::map<std::pair<Node, Node>, bool> edges;
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; j < n; j++) {
-			auto ijMtach = this->match2(imgs[i], imgs[j]);
+			auto ijMtach = this->match2(imgs[i], imgs[j],Constants::DEBUG);
 			for (auto p : ijMtach) {
 				Node a = {i, p.queryIdx}, b = {j, p.trainIdx};
 				g[a.first][a.second].push_back(b);

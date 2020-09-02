@@ -82,7 +82,7 @@ std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool drawMatch
 		clus.remove(l1);
 		clus.remove(l2);
 	}
-	if (drawMatch || 1) {
+	if (drawMatch) {
 		this->draw(img1, img2, goodMatches);
 		this->draw(img1, img2, betterMatch);
 	}
@@ -95,7 +95,7 @@ void Matcher::draw(const cv::Mat& img1, const cv::Mat& img2, const std::vector<p
 	std::vector<cv::KeyPoint> key1, key2;
 	std::vector<cv::DMatch> vmtach;
 	for (const pKeyPoint& p : kvec) {
-		vmtach.push_back(DMatch(key1.size(), key2.size(),0));
+		vmtach.push_back(cv::DMatch(key1.size(), key2.size(),0));
 		key1.push_back(p.first);
 		key2.push_back(p.second);
 	}

@@ -19,7 +19,7 @@ namespace Constants {
 	const double GOOD_MATCH_COST = 150; //units: cm^2
 
 // DEBUG printing
-	const bool DEBUG = true;
+	const bool DEBUG = false;
 
 // Number of keypoints
 	const int MIN_HESSIAN = 1200;
