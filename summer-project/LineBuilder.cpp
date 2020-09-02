@@ -65,31 +65,39 @@ const LineBuilder& LineBuilder::operator=(const LineBuilder& other) {
 
 
 Line LineBuilder::getLine(std::vector<double> pixel) const {
-	if ((this->camera) != (Camera::no_camera())) {
+	if ((this->camera) != (Camera::no_camera())) {//if the line builder has a camera, we will create a line based of the camera parameters
+
+		//getting camera parameters
 		cv::Mat_<float> invCameraMatrix;
 		cv::Mat_<float> cameraMatrix;
 		cv::Mat_<float> cameraTransformation;
 		cv::Mat distortion;
 		(this->camera).getCalibrationParameters(cameraMatrix, invCameraMatrix, distortion);
 		(this->camera).getCameraExtrinsicParam(cameraTransformation);
+	
+		//getting line from the camera to the homogenus(pixel)
 		cv::Mat_<float> lineMat = invCameraMatrix * (cv::Mat_<float>(cv::Vec3f(pixel[0], pixel[1], 1)));
 		cv::Vec3f line(lineMat.at<float>(0, 0), lineMat.at<float>(1, 0), lineMat.at<float>(2, 0));
+
+		//normalizing line
 		line = line / (lineMat.dot(lineMat));
+
+		//rotationg line 
 		cv::Mat_<float> rot = cv::Mat::eye(cv::Size(3, 3), CV_32F);
 		cv::Rect_<int> rect1(0, 0, 3, 3), rect2(3, 0, 1, 3);
 		cameraTransformation(rect1).copyTo(rot);
 		cv::Mat_<float> mult = rot * cv::Mat_<float>(line);
+
+		//getting line direction
 		cv::Vec3f dir = cv::Vec3f(mult.at<float>(0, 0), mult.at<float>(1, 0), mult.at<float>(2, 0));
-		//if (Constants::DEBUG) std::cout<<"cameraID"<<this->cameraID << std::endl << std::endl;
-		return Line(this->pos, dir);
-	}else{
+		return Line(this->pos, dir);//returning a line from the linebuilder position in the direction dir.
+	}else{//in case of backward compatibility
 		
 		// casting int array into double array (to be used later)
 		std::vector<double> pixeld = std::vector<double>(2);
 		pixeld.resize(pixel.size());
 		std::copy(std::begin(pixel), std::end(pixel), std::begin(pixeld));
-
-		//pixeld = pixeld - (resolution / 2.0); //normalizing pixel pos relative to center
+		
 		pixeld[0] = pixeld[0] - (this->resolution[0] / 2.0);
 		pixeld[1] = pixeld[1] - (this->resolution[1] / 2.0);
 		pixeld[1] = -pixeld[1]; // coordinates (>x, ^y, .z)
@@ -100,7 +108,7 @@ Line LineBuilder::getLine(std::vector<double> pixel) const {
 		temp[0]= (pixeld[0] * tan(this->angle[0] / 2.0)) / (this->resolution[0] / 2.0); // calculating x length relative to z (=1)
 		temp[1] = (pixeld[1] * tan(this->angle[1] / 2.0)) / (this->resolution[1] / 2.0); // calculating y length relative to z (=1)
 
-		Vec3d v = { temp[0], temp[1], 1 }; //declaring the 3d line vector based on the calculation above
+		cv::Vec3d v = { temp[0], temp[1], 1 }; //declaring the 3d line vector based on the calculation above
 
 		return Line(this->pos, v);
 		

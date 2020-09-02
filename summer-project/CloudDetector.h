@@ -1,12 +1,20 @@
+/////////////////////////////////
+// file written by Noam Licht, //
+// written in 25/08/2020       //
+/////////////////////////////////
+
 #ifndef _CloudDetector_H_
 #define _CloudDetector_H_
 
+//include algorithm
 #include <algorithm>
 
+//include our files
 #include "Cluster.h"
 #include "Constants.h"
 #include "Cloud.h"
 
+//struct edge
 struct Edge {
 	int u, v;
 	double w;
@@ -15,29 +23,15 @@ struct Edge {
 	}
 };
 
+
+//namespace CloudDetector, getting 3d points and detecting heavy clouds in it
 namespace CloudDetector {
 	//really important to be sure that X,Y is correct
-	static double XYdistance(const Vec3d& a, const Vec3d& b, int X = 0, int Y = 2) { // distance only on the XY plane (when Z is height)
+	static double XYdistance(const cv::Vec3d& a, const cv::Vec3d& b, int X = 0, int Y = 2) { // distance only on the XY plane (when Z is height)
 		return (a[X] - b[X])*(a[X] - b[X]) + (a[Y] - b[Y])*(a[Y] - b[Y]);
 	}
-	static std::vector<Cloud> detectGroups(const std::vector<Vec3d>& points) {
+	static std::vector<Cloud> detectGroups(const std::vector<cv::Vec3d>& points) {
 		int n = points.size();
-		////////////past ideas
-		/*
-		std::vector<std::vector<int>> g(n);
-		std::vector<Edge> edges;
-		for (int i = 0; i < n; i++) {
-			for (int j = i + 1; j < n; j++) {
-				double ijdist = XYdistance(points[i], points[j]);
-				if (ijdist <= Constants::MAX_R_FOR_BODY) {
-					g[i].push_back(j);
-					g[j].push_back(i);
-					edges.push_back({i, j, ijdist});
-				}
-			}
-		}
-		std::sort(edges.begin(), edges.end());
-		*/
 		std::vector<bool> check(n);
 		std::vector<Cloud> clouds;
 		for (int i = 0; i < n; i++) {

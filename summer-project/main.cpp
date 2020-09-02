@@ -1,11 +1,14 @@
 #define _CRT_SECURE_NO_WARNINGS
+
+//normal includes
 #include <iostream>
 #include <ctime>
 #include <fstream>
 
+
+//our file includes
 #include "LineBuilder.h"
 #include "Cluster.h"
-#include "ORBDetector.h"
 #include "Matcher.h"
 #include "KMatcher.h"
 #include "Camera.h"
@@ -13,8 +16,10 @@
 #include "Utilities.h"
 #include "Calibration.h"
 
+
+//
 #define NOAM_COMPUTER 0
-#define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"scene/")
+#define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/scene/":"scene/")
 
 // read the cfg file
 void readCfg(std::string &inPath, std::string &camData, bool &calibrationNow) {
@@ -32,7 +37,7 @@ void initCameras(const std::vector<Camera>& cameras) {
 	LineBuilder::cams = cameras;
 }
 
-
+//prints all pairs of clouds that are less than 2 meters apart. 
 void printToCloseClouds(std::vector<Cloud> clouds) {
 	for (int i = 0; i < clouds.size(); i++) {
 		for (int j = i + 1; j < clouds.size(); j++) {
@@ -104,7 +109,7 @@ int main(int argc, char *argv[]) {
 			centerout << point.average() << std::endl;
 		}
 
-
+		printToCloseClouds(clouds);
 
 
 		i++;

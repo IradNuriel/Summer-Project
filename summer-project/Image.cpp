@@ -1,5 +1,6 @@
 #include "Image.h"
 
+//c'tor
 Image::Image(const int id, const cv::Mat & img, const cv::Ptr<cv::ORB>& detector){
 	this->img = img;
 	this->lb = LineBuilder(id);

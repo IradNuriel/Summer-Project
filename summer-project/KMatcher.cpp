@@ -1,4 +1,11 @@
+/////////////////////////////////
+// file written by Noam Licht, //
+// written in 02/08/2020       //
+/////////////////////////////////
 #include "KMatcher.h"
+
+
+//TODO:DOCUMENT THIS FILE BY LICHT!
 
 KMatcher::KMatcher(){
 
@@ -30,7 +37,6 @@ typedef std::pair<int, int> Node;
 			}
 		}
 	}
-	std::vector<std::vector<Node>> cliques;
 	std::vector<cv::Vec3d> points;
 	for (int i = 0; i < n; i++) { 
 		for (int j = 0; j < g[i].size(); j++) { 

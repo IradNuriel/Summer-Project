@@ -1,3 +1,7 @@
+/////////////////////////////////
+// file written by Noam Licht, //
+// written in 02/08/2020       //
+/////////////////////////////////
 #ifndef _IMAGE_H_
 #define _IMAGE_H_
 #include <iostream>

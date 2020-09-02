@@ -2,7 +2,7 @@
 #include "Line.h"
 
 Cluster::Cluster() : count(0),
-directionVectorRejectionSum(Matx33f::zeros()),
+directionVectorRejectionSum(cv::Matx33f::zeros()),
 originProjectionSum({ 0, 0, 0 }),
 originDistSquredSum(0) {}
 
@@ -15,7 +15,7 @@ Cluster::Cluster(const Cluster& l) {
 
 Cluster::Cluster(const Line &l) {
 	this->count = 1;
-	this->directionVectorRejectionSum = Matx33d::eye() - l.getV() * l.getV().t();
+	this->directionVectorRejectionSum = cv::Matx33d::eye() - l.getV() * l.getV().t();
 	this->originProjectionSum = l.getP();
 	this->originDistSquredSum = originProjectionSum.dot(originProjectionSum);
 }
@@ -42,11 +42,11 @@ void Cluster::remove(const Line &l) {
 	remove(Cluster(l));
 }
 
-double Cluster::cost(Vec3d x) const {
+double Cluster::cost(cv::Vec3d x) const {
 	return (x.dot(this->directionVectorRejectionSum * x - 2 * this->originProjectionSum) + this->originDistSquredSum) / this->size();
 }
 
-Vec3d Cluster::getMiddlePoint() const {
+cv::Vec3d Cluster::getMiddlePoint() const {
 	if (count <= 1) {
 		printf("Error");
 	}
@@ -65,7 +65,7 @@ Line Cluster::toLine() const {
 	if (count != 1) {
 		printf("Argument error: can't convert Cluster to line since Cluster.size() != 1");
 	}
-	return Line(this->originProjectionSum, (Matx33d::eye() - this->directionVectorRejectionSum)*Vec3d(1, 1, 1));
+	return Line(this->originProjectionSum, (cv::Matx33d::eye() - this->directionVectorRejectionSum)*cv::Vec3d(1, 1, 1));
 }
 
 size_t Cluster::size() const {

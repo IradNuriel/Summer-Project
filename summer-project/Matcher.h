@@ -1,16 +1,29 @@
+/////////////////////////////////
+// file written by Noam Licht, //
+// written in 01/08/2020       //
+/////////////////////////////////
+
 #ifndef _MATCHER_H_
 #define _MATCHER_H_
+
+//normal includes
 #include <iostream>
 #include <vector>
 #include <utility>
+
+//opencv stuff includes
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/features2d.hpp"
+
+//our files includes
 #include "Constants.h"
 #include "Cluster.h"
 #include "Image.h"
 
+
 typedef std::pair<cv::KeyPoint, cv::KeyPoint> pKeyPoint;
+//class Matcher, match features in two images.
 class Matcher {
 public:
 	Matcher();//defult c'tor

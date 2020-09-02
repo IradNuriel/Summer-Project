@@ -1,9 +1,16 @@
+//////////////////////////////////
+// file written by all of us,   //
+// written in 27/08/2020        //
+//////////////////////////////////
+
 #ifndef _CONSTANTS_H_
 #define _CONSTANTS_H_
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string>
 
+
+//namespace Constants, contains all the constants in the program
 namespace Constants {
 // For filtering matches using Lowe's ratio test
 	const float RATIO_THRESH = 0.75f;
@@ -17,10 +24,10 @@ namespace Constants {
 // Number of keypoints
 	const int MIN_HESSIAN = 1200;
 
-//Minimum distance between objects squared
-	const int MIN_DISTANCE_SQUARED_BETWEEN_OBJECTS = 4;
+//Minimum distance between objects squared(cm^2)
+	const int MIN_DISTANCE_SQUARED_BETWEEN_OBJECTS = 40000;
 
-//number of matches between pattern and image
+//min number of matches between pattern and image
 	const int MIN_MATCHES_IN_CALIBRATION_IMAGES = 1;
 
 // Ratio of degrees->radians

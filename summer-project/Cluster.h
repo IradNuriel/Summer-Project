@@ -1,8 +1,17 @@
+/////////////////////////////////
+// file written by Irad Nuriel,//
+// written in 26/07/2020       //
+/////////////////////////////////
+
 #ifndef _CLUSTER_H_
 #define _CLUSTER_H_
 #include "Line.h"
 #include <ostream>
-/* Cluster is a data-structure for a set of lines L
+/* 
+Class based on Tomer Wolberg code
+
+
+Cluster is a data-structure for a set of lines L
    that can answer the following queries in O(1):
 
    Initialize():
@@ -36,9 +45,9 @@ public:
 	void add(const Line &l);//function add(line), add line to the cluster
 	void remove(const Cluster &l);//function remove(cluster), remove one cluster form another 
 	void remove(const Line &l);//function remove(line), remove given line from the cluster 
-	double cost(Vec3d x) const;/*function cost,
+	double cost(cv::Vec3d x) const;/*function cost,
 								return the sum of squared distances of x from the lines in the structure*/
-	Vec3d getMiddlePoint() const;/*function getMiddlePoint,
+	cv::Vec3d getMiddlePoint() const;/*function getMiddlePoint,
 								  get the point that gives the minimum sum of squared distances,
 								  from the lines in the cluster.*/
 	double cost() const;/*return the cost of the point,
@@ -50,8 +59,8 @@ public:
 
 protected:
 	size_t  count;
-	Matx33d directionVectorRejectionSum;  // Sum of the rejection matrices of the lines direction vectors (v).
-	Vec3d   originProjectionSum; // Sum of the projections of the origin on the lines.               
+	cv::Matx33d directionVectorRejectionSum;  // Sum of the rejection matrices of the lines direction vectors (v).
+	cv::Vec3d   originProjectionSum; // Sum of the projections of the origin on the lines.               
 	double  originDistSquredSum; // Sum of the squared distances of the lines from the origin.        
 };
 

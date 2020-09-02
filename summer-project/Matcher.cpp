@@ -1,4 +1,11 @@
+/////////////////////////////////
+// file written by Noam Licht, //
+// written in 01/08/2020       //
+/////////////////////////////////
+
 #include "Matcher.h"
+
+//TODO: DOCUMENT THIS FILE BY LICHT
 
 
 Matcher::Matcher(){
