@@ -20,7 +20,7 @@ typedef std::pair<int, int> Node;
 	// build graph
 	std::map<std::pair<Node, Node>, bool> edges;
 	for (int i = 0; i < n; i++) {
-		for (int j = i + 1; i < n; i++) {
+		for (int j = i + 1; j < n; j++) {
 			auto ijMtach = this->match2(imgs[i], imgs[j]);
 			for (auto p : ijMtach) {
 				Node a = {i, p.queryIdx}, b = {j, p.trainIdx};
@@ -34,7 +34,7 @@ typedef std::pair<int, int> Node;
 	std::vector<cv::Vec3d> points;
 	for (int i = 0; i < n; i++) { 
 		for (int j = 0; j < g[i].size(); j++) { 
-			if (g[i][j].size() > 1) { 
+			if (g[i][j].size() >= 1) { 
 				std::vector<Node> nodes(g[i][j]);
 				nodes.push_back({ i,j });
 				Cluster clus;

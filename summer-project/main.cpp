@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <ctime>
 #include <fstream>
@@ -13,7 +14,7 @@
 #include "Calibration.h"
 
 #define NOAM_COMPUTER 0
-#define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"set1/")
+#define FOLDER1 (NOAM_COMPUTER?"./../../summer-project/set1/":"scene/")
 
 // read the cfg file
 void readCfg(std::string &inPath, std::string &camData, bool &calibrationNow) {
@@ -89,10 +90,19 @@ int main(int argc, char *argv[]) {
 		// match the retrieved images
 		KMatcher km;
 		std::vector<cv::Vec3d> points = km.match(images);
-
+		char namepoint[100], namecenter[100];
+		sprintf(namepoint, "points%d.txt", i);
+		sprintf(namecenter, "centers%d.txt", i);
+		std::ofstream pointout(namepoint);
+		std::ofstream centerout(namecenter);
+		for (cv::Vec3d point : points) {
+			pointout << point << std::endl;
+		}
 		// process clouds
 		std::vector<Cloud> clouds = CloudDetector::detectGroups(points);
-
+		for (Cloud point : clouds) {
+			centerout << point.average() << std::endl;
+		}
 
 
 

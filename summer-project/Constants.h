@@ -9,7 +9,7 @@ namespace Constants {
 	const float RATIO_THRESH = 0.75f;
 
 // For determining which matches are "good" matches
-	const double GOOD_MATCH_COST = 1000000000; //units: cm^2
+	const double GOOD_MATCH_COST = 150; //units: cm^2
 
 // DEBUG printing
 	const bool DEBUG = true;

@@ -75,7 +75,7 @@ std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool drawMatch
 		clus.remove(l1);
 		clus.remove(l2);
 	}
-	if (drawMatch) {
+	if (drawMatch || 1) {
 		this->draw(img1, img2, goodMatches);
 		this->draw(img1, img2, betterMatch);
 	}

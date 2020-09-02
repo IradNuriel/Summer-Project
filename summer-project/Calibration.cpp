@@ -61,7 +61,7 @@ void Calibration::generateImgList(std::string inFile, int nCamera, std::string i
 
 std::vector<Camera> Calibration::getCalibration(bool needCalibration, std::string inPath, std::string camData,int& nCamera) {
 	if ((!(Utilities::fileExists(inPath + camData))) || needCalibration) {
-		multiCalibrate(calcNCamera(Constants::CALIBRATION_DIR), Constants::CALIBRATION_DIR, inPath + camData, 425, 300, 28, 20);
+		multiCalibrate(calcNCamera(Constants::CALIBRATION_DIR), Constants::CALIBRATION_DIR, inPath + camData, 425, 300, 28, 20,true);
 	}
 	std::vector<Camera> cameras = parseParamsFile(inPath + camData);
 	nCamera = cameras.size();
