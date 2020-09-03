@@ -8,6 +8,7 @@ Image::Image(const int id, const cv::Mat & img, const cv::Ptr<cv::ORB>& detector
 	if (detector) this->init(detector);
 }
 
+//init image features
 void Image::init(const cv::Ptr<cv::ORB>& detector){
 	detector->detectAndCompute(this->img, cv::noArray(), this->key, this->desc);
 }

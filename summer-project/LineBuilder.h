@@ -7,7 +7,7 @@
 #include "Constants.h"
 #include <vector>
 
-// this entire class was translated from python, orig. code by Licht
+
 class LineBuilder {
 public:
 	LineBuilder(std::vector<double> res = {1200,800}, std::vector<double> a = {66.276,46.861});

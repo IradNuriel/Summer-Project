@@ -21,7 +21,6 @@ public:
 	Image(const int id, const cv::Mat& img, const cv::Ptr<cv::ORB>& detector = cv::Ptr<cv::ORB>()); // c'tor
 	void init(const cv::Ptr<cv::ORB>& detector);
 	cv::Mat img;
-	cv::Vec3d pos;
 	std::vector<cv::KeyPoint> key;
 	cv::Mat desc;
 	LineBuilder lb;

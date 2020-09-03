@@ -2,113 +2,69 @@
 // file written by Noam Licht, //
 // written in 01/08/2020       //
 /////////////////////////////////
-
 #include "Matcher.h"
 
-//TODO: DOCUMENT THIS FILE BY LICHT
 
-
+// c'tor
 Matcher::Matcher(){
 	this->detector = cv::ORB::create(minHessian);
 	this->matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE_HAMMING);
 }
-
+// copy c'tor
 Matcher::Matcher(const Matcher & other){
 	this->detector = cv::Ptr<cv::ORB>(other.detector);
 	this->matcher = cv::Ptr<cv::DescriptorMatcher>(other.matcher);
 }
-
+// init image feature using the object's detector
 void Matcher::initImg(Image & img) const{
 	img.init(this->detector);
 }
 
-std::vector<pKeyPoint> Matcher::match2(const cv::Mat& img1, const cv::Mat& img2, bool drawMatch) const {
-	std::vector<cv::KeyPoint> keypoints1, keypoints2;
-	cv::Mat descriptors1, descriptors2;
-	//detect keypoints in input images.
-	this->detector->detectAndCompute(img1, cv::noArray(), keypoints1, descriptors1);
-	this->detector->detectAndCompute(img2, cv::noArray(), keypoints2, descriptors2);
-	//k nearest neighbor matching.
-	std::vector<std::vector<cv::DMatch>> knnMatches;
-	this->matcher->knnMatch(descriptors1, descriptors2, knnMatches, 2);
-	
-	//-- Filter matches using the Lowe's ratio test
-	
-	std::vector<cv::DMatch> goodMatches;
-	for (size_t i = 0; i < knnMatches.size(); i++) {
-		if (knnMatches[i][0].distance < Constants::RATIO_THRESH * knnMatches[i][1].distance) {
-			goodMatches.push_back(knnMatches[i][0]);
-		}
-	}
-	// discarding
 
-	std::vector<pKeyPoint> feature;
-	for (const cv::DMatch& match: goodMatches) {
-		feature.emplace_back(keypoints1[match.queryIdx] , keypoints2[match.trainIdx]);
-	}
-	if (drawMatch) {
-		this->draw(img1, img2, feature);
-		
-	}
-	return feature;
-}
 std::vector<cv::DMatch> Matcher::match2(Image& img1, Image& img2, bool drawMatch) const {
-	//k nearest neighbor matching
+	// k nearest neighbor matching using opencv
 	std::vector<std::vector<cv::DMatch>> knnMatches;
 	this->matcher->knnMatch(img1.desc, img2.desc, knnMatches, 2);
 	//-- Filter matches using the Lowe's ratio test
-	std::vector<cv::DMatch> goodMatches;
+	std::vector<cv::DMatch> filteredMatches;
 	for (size_t i = 0; i < knnMatches.size(); i++) {
 		if (knnMatches[i].size() == 1 || knnMatches[i][0].distance < Constants::RATIO_THRESH * knnMatches[i][1].distance) {
-			goodMatches.push_back(knnMatches[i][0]);
+			filteredMatches.push_back(knnMatches[i][0]);
 		}
 	}
-	// discarding
+	// 2nd filtering matches which have too large cost (based in geometry knowladge)
 	std::vector<pKeyPoint> feature;
-	std::vector<cv::DMatch> betterMatch;
+	std::vector<cv::DMatch> macthes = filteredMatches; filteredMatches.clear();
 	std::vector<cv::KeyPoint> nkey1, nkey2;
 	Cluster clus;
-	for (const cv::DMatch& match : goodMatches) {
+	for (const cv::DMatch& match : macthes) {
+		// getting the pixel position of the features
 		cv::Point2d p1 = img1.key[match.queryIdx].pt, p2 = img2.key[match.trainIdx].pt;
+		// building line for each feture using the LineBulider class
 		Line l1 = img1.lb.getLine({ p1.x,p1.y });
 		Line l2 = img2.lb.getLine({ p2.x,p2.y });
+		// adding the line to the cluster
 		clus.add(l1);
 		clus.add(l2);
-		if (clus.cost() < Constants::GOOD_MATCH_COST) {
-			betterMatch.push_back(match);
+		if (clus.cost() < Constants::GOOD_MATCH_COST) { // checking whether the cost of the match is good enough
+			filteredMatches.push_back(match);
 			nkey1.push_back(img1.key[match.queryIdx]);
 			nkey2.push_back(img2.key[match.trainIdx]);
 		}
+		// removing the line from the cluster
 		clus.remove(l1);
 		clus.remove(l2);
 	}
-	if (drawMatch) {
-		this->draw(img1, img2, goodMatches);
-		this->draw(img1, img2, betterMatch);
+	if (drawMatch) { // draw a window with the matches (before and after the 2d filtering)
+		this->draw(img1, img2, macthes);
+		this->draw(img1, img2, filteredMatches);
 	}
-	return betterMatch;
+	return filteredMatches;
 }
 
-
-void Matcher::draw(const cv::Mat& img1, const cv::Mat& img2, const std::vector<pKeyPoint>& kvec) const{
-	//-- Draw matches
-	std::vector<cv::KeyPoint> key1, key2;
-	std::vector<cv::DMatch> vmtach;
-	for (const pKeyPoint& p : kvec) {
-		vmtach.push_back(cv::DMatch(key1.size(), key2.size(),0));
-		key1.push_back(p.first);
-		key2.push_back(p.second);
-	}
-	cv::Mat imgMatches;
-	drawMatches(img1, key1, img2, key2, vmtach, imgMatches, cv::Scalar::all(-1),
-		cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-	cv::namedWindow("Good Matches", cv::WINDOW_NORMAL);
-	cv::imshow("Good Matches", imgMatches);
-	cv::waitKey();
-}
 
 void Matcher::draw(const Image & img1, const Image & img2, const std::vector<cv::DMatch>& match, std::string title) const{
-	//-- Draw matches
+	//-- Draw matches using opencv interface
 	cv::Mat imgMatches;
 	drawMatches(img1.img, img1.key, img2.img, img2.key, match, imgMatches, cv::Scalar::all(-1),
 		cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
