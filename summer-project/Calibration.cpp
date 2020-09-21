@@ -19,12 +19,12 @@ void Calibration::multiCalibrate(int nCamera, std::string outputFileName, int pa
 	finder.loadPattern(pattern);
 
 	//some opencv stuff to make sure the the program will not crash inside multiCalib.run() (it will cause unexpected behavior)
-	for (int cameraIdx = 0; cameraIdx < nCamera; cameraIdx++) {
+	/*for (int cameraIdx = 0; cameraIdx < nCamera; cameraIdx++) {
 		std::vector<cv::Mat> imgVec = getImageVector(Constants::CALIBRATION_DIR, cameraIdx);
 		finder.computeObjectImagePoints(imgVec);
 		std::vector<cv::Mat> objPoints = finder.getObjectPoints();
 		std::vector<cv::Mat> imgPoints = finder.getImagePoints();
-	}
+	}*/
 
 	//generating the image list
 	std::string inputFileName = Constants::CALIBRATION_DIR + "imgList.xml";

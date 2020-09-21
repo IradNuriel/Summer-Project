@@ -46,12 +46,12 @@ typedef std::pair<int, int> Node; // for easier use and clearity
 					clus.add(line); //add to cluster
 				}
 				if (clus.cost() <= Constants::GOOD_MATCH_COST) { //check whether the cost is low enough
-					if (Constants::DEBUG) std::cout << clus << std::endl; 
+					std::cout << clus << std::endl; 
 					points.push_back(clus.getMiddlePoint());
 				}
 			}
 		}
 	}
-	if (Constants::DEBUG) std::cout << "#Points: "<< points.size() << std::endl;
+	std::cout << "#Points: "<< points.size() << std::endl;
 	return points;
 }

@@ -25,7 +25,7 @@ namespace Constants {
 	const int MIN_HESSIAN = 1200;
 
 //Minimum distance between objects squared(cm^2)
-	const int MIN_DISTANCE_SQUARED_BETWEEN_OBJECTS = 40000;
+	const int MIN_DISTANCE_SQUARED_BETWEEN_OBJECTS = 2000;
 
 //min number of matches between pattern and image
 	const int MIN_MATCHES_IN_CALIBRATION_IMAGES = 1;
